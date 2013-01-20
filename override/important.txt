@@ -1,0 +1,14 @@
+This plugin is divided into 2 areas:
+
+1. Plugin Overrides - located in PRESTASHOP/modules/appixiacartapi/override
+2. Core Plugin - all other content of PRESTASHOP/modules/appixiacartapi
+
+All of your changes and customizations should only be in the Plugin Overrides (much like how core Prestashop works with customizations).
+
+If you make changes in the core plugin, you will not be able to upgrade it.
+
+The plugin was designed with overrides in mind, so all behavior you want to change should be easily available for change through Plugin Overrides.
+
+
+
+The Plugin Overrides (everything in PRESTASHOP/modules/appixiacartapi/override) include some default examples. Feel free to change those around. All content in the override folder is under your responsibility.
