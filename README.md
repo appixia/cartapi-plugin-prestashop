@@ -81,6 +81,21 @@ Handles the following Cart API operations:
 * `GetPaymentMethods` - takes a customer order and returns the possible payment methods that they need to choose from. 
 
 
+Debugging Cart API Requests
+---------------------------
+
+The main purpose of this plugin is to respond to Cart API requests (made by a mobile app). When things don't work as expected, you may want to debug the plugin and see the responses for yourself. In addition, when developing overrides, debugging is essential as part of the development process. 
+
+You can perform the requests to the Cart API web service yourself (without the mobile app). This lets you see in your desktop browser the XML / JSON response. This is also very useful for debugging PHP errors and notices.
+
+A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/override/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
+
+Here is an example of a request that the debugger generates:  
+http://prestastore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
+
+If you want to see PHP notices and warnings, take a look in `Helpers.php` and edit the function `CartAPI_Handlers_Helpers::setServerNotices()`.
+
+
 Plugin Folder Structure
 -----------------------
 
@@ -110,3 +125,29 @@ Several places in the mobile app display regular HTML content from the Prestasho
 
 `/modules/appixiacartapi/override/cms/assets/`  
 Static files required by the templates in the `/cms` folder. Mostly mobile-specific versions of JS and CSS files.
+
+### Other Important Core Plugin Files
+
+Most of the interesting plugin core files are found in /modules/appixiacartapi. As stated before, you should not make modifications to these core files. All of your changes should be placed in the override folder.
+
+`api.php`  
+The main entry point for a Cart API call. The response is usually XML or JSON. The mobile app makes all of its API requests to this entry point. In order to debug, you can also make manual calls to this entry point using a regular desktop browser and see the responses (XML).
+
+`Helpers.php` (class `CartAPI_Handlers_Helpers`)  
+A helper class which includes static helper functions related to Prestashop (like getting the Prestashop store base URL). This class is not intended to be overridden.
+
+`engine/Helpers.php` (class `CartAPI_Helpers`)  
+A helper class which includes static helper functions related to the Cart API protocol (encoding and decoding XML protocol messages). This class is not intended to be overridden.
+
+`engine/Mediums/Encoder.php` (class `CartAPI_Mediums_Encoder`)  
+The abstract base class used for encoding Cart API protocol messages. There are several implementations of different mediums (like XML or JSON). An encoder instance is passed to all Cart API handlers (usually named $encoder). This class is not intended to be overridden.
+
+`appixiacartapi.php`  
+The module implementation for Prestashop. Mostly includes hooks the plugin makes on Prestashop. The main hook is a hook on regular rendered pages when accessing from the mobile app. If by some strange reason the mobile app is redirected to a page that starts rendering the regular desktop website, the plugin catches this and redirects.
+
+`pagehook.php`  
+The place where the mobile app is redirected when the hook catches a regular desktop web page render.
+
+`debug/debugger.php`  
+A helper tool for debugging Cart API requests using your desktop browser. This tool should only be used for development. The request templates for this tool are found in templates.php (in the same directory). You can create your own templates by editing `/override/debug/templates.php`.  
+**It is recommended to delete or restrict access to the debug directory once your site goes live.**
