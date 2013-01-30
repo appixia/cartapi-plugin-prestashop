@@ -82,7 +82,8 @@ class CartAPI_Handlers_Items
 
 		// load the products and the total element count
 		$result = Db::getInstance()->ExecuteS($sql);
-		$total_elements = intval(array_pop(Db::getInstance()->getRow('SELECT FOUND_ROWS()')));
+		$total_elements_row = Db::getInstance()->getRow('SELECT FOUND_ROWS()');
+		$total_elements = intval(array_pop($total_elements_row));
 		
 		// change results before they are returned
 		$this->overrideItemListResult($request, $result, $total_elements);
@@ -179,20 +180,36 @@ class CartAPI_Handlers_Items
 		}
 	}
 
-	protected function getThumbnailUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
+	protected function getImageUrl($name, $ids, $type)
 	{
 		global $link;
+		$url = $link->getImageLink($name, $ids, $type); // older prestashop versions return a relative url here, so we must make sure it's absolute
+		if (CartAPI_Handlers_Helpers::isAbsoluteUrl($url)) return $url;
+		else return CartAPI_Handlers_Helpers::getShopDomain().$url;
+	}
+
+	protected function getThumbnailImageType()
+	{
+		return 'medium';
+	}
+
+	protected function getThumbnailUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
+	{
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
 		if ($product_id != -1) $image_id = (int)$product_id . '-' . (int)$image_id;
-		return $link->getImageLink($link_rewrite, $image_id, 'medium');
+		return $this->getImageUrl($link_rewrite, $image_id, $this->getThumbnailImageType());
+	}
+
+	protected function getImagesImageType()
+	{
+		return 'thickbox';
 	}
 
 	protected function getImageUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
 	{
-		global $link;
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
 		if ($product_id != -1) $image_id = (int)$product_id . '-' . (int)$image_id;
-		return $link->getImageLink($link_rewrite, $image_id, 'thickbox');
+		return $this->getImageUrl($link_rewrite, $image_id, $this->getImagesImageType());
 	}
 
 	protected function getPriceFromProduct($product)
@@ -217,7 +234,11 @@ class CartAPI_Handlers_Items
 
 	protected function addThumbnailUrlFromProduct($encoder, &$item, $product)
 	{
-		$encoder->addString($item, 'ThumbnailUrl', $this->getThumbnailUrlFromImageId($product->getCoverWs(), $product->id));
+		// taken from Product::getCoverWs - we're not using getCoverWs directly since it's not avail in old prestashop versions
+		$cover = $product->getCover($product->id);
+		$cover_image_id = $cover['id_image'];
+
+		$encoder->addString($item, 'ThumbnailUrl', $this->getThumbnailUrlFromImageId($cover_image_id, $product->id));
 	}
 
 	protected function addThumbnailUrlFromProductId($encoder, &$item, $product_id)
@@ -314,9 +335,9 @@ class CartAPI_Handlers_Items
 			$combinations[$row['id_product_attribute']]['weight'] = (float)($row['weight']);
 			$combinations[$row['id_product_attribute']]['quantity'] = (int)($row['quantity']);
 			$combinations[$row['id_product_attribute']]['reference'] = $row['reference'];
-			$combinations[$row['id_product_attribute']]['ean13'] = $row['ean13'];
-			$combinations[$row['id_product_attribute']]['unit_impact'] = $row['unit_price_impact'];
-			$combinations[$row['id_product_attribute']]['minimal_quantity'] = $row['minimal_quantity'];
+			if (isset($row['ean13'])) $combinations[$row['id_product_attribute']]['ean13'] = $row['ean13'];
+			if (isset($row['unit_price_impact']))  $combinations[$row['id_product_attribute']]['unit_impact'] = $row['unit_price_impact'];
+			if (isset($row['minimal_quantity']))  $combinations[$row['id_product_attribute']]['minimal_quantity'] = $row['minimal_quantity'];
 			$combinations[$row['id_product_attribute']]['id_image'] = isset($combinationImages[$row['id_product_attribute']][0]['id_image']) ? $combinationImages[$row['id_product_attribute']][0]['id_image'] : -1;
 		}
 		

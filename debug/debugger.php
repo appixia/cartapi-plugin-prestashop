@@ -46,6 +46,7 @@
 </textarea>
 
 <input type="button" id="sendbutton" value="Send"/>
+<input type="button" id="logoutclearbutton" value="Logout"/>
 <input type="button" id="clearbutton" value="Clear Cookies"/>
 
 </div>
@@ -91,6 +92,11 @@ $(document).ready(function()
 	$("input#clearbutton").click(function()
 	{
 		$("iframe").attr("src", "clearcookies.php");
+	});
+
+	$("input#logoutclearbutton").click(function()
+	{
+		$("iframe").attr("src", "clearcookies.php?logout=1&");
 	});
 	
 });

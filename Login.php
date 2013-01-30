@@ -25,8 +25,7 @@ class CartAPI_Handlers_Login
 		$response = CartAPI_Helpers::createSuccessResponse($encoder);
 		
 		// add the session id
-		global $cookie;
-		$encoder->addString($response, 'SessionId', $cookie->getName());
+		$encoder->addString($response, 'SessionId', $this->getCookieSessionId());
 	
 		// show the response
 		$encoder->render($response);
@@ -59,12 +58,18 @@ class CartAPI_Handlers_Login
 		// see if we need to login too, then add the session id
 		if (!isset($request['Login']) || ($request['Login'] == 'true'))
 		{
-			global $cookie;
-			$encoder->addString($response, 'SessionId', $cookie->getName());
+			$encoder->addString($response, 'SessionId', $this->getCookieSessionId());
 		}
 	
 		// show the response
 		$encoder->render($response);
+	}
+
+	public function getCookieSessionId()
+	{
+		global $cookie;
+		if (method_exists('Cookie','getName')) return $cookie->getName();
+		else return md5('ps'._COOKIE_KEY_); // old prestashop versions don't have the getName method on Cookie
 	}
 
 	// syncs the current cookie with the given $customer (Prestashop object)
@@ -76,7 +81,7 @@ class CartAPI_Handlers_Login
 		$cookie->customer_lastname = $customer->lastname;
 		$cookie->customer_firstname = $customer->firstname;
 		$cookie->logged = 1;
-		$cookie->is_guest = $customer->isGuest();
+		if (method_exists('Customer','isGuest')) $cookie->is_guest = $customer->isGuest();
 		$cookie->passwd = $customer->passwd;
 		$cookie->email = $customer->email;
 		
@@ -145,7 +150,7 @@ class CartAPI_Handlers_Login
 	
 		// add the new user
 		$customer->active = 1;
-		$customer->is_guest = 0;
+		if (property_exists('Customer','is_guest')) $customer->is_guest = 0;
 		if (!$customer->add()) CartAPI_Helpers::dieOnError($encoder, 'RegisterNotAuthorized', CartAPI_Handlers_Helpers::removeHtmlTags(Tools::displayError('An error occurred while creating your account.')));
 		
 		// see if we need to login too
@@ -180,9 +185,9 @@ class CartAPI_Handlers_Login
 		global $cookie;
 	
 		// send an email just like in the Prestashop AuthController
-		if (!$customer->is_guest)
+		if ((!property_exists('Customer','is_guest')) || (!$customer->is_guest))
 		{
-			Mail::Send((int)$cookie->id_lang, 'account', Mail::l('Welcome!', (int)$cookie->id_lang), 
+			Mail::Send((int)$cookie->id_lang, 'account', CartAPI_Handlers_Helpers::compatibilityMailTranslate('Welcome!', (int)$cookie->id_lang), 
 				array('{firstname}' => $customer->firstname, '{lastname}' => $customer->lastname, '{email}' => $customer->email, '{passwd}' => Tools::getValue('passwd')), $customer->email, $customer->firstname.' '.$customer->lastname);
 		}
 	

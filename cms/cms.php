@@ -9,7 +9,8 @@ require_once(dirname(__FILE__).'/mobilize.php');
 $cms = false;
 if ($id_cms = (int)Tools::getValue('id_cms')) $cms = new CMS($id_cms, $cookie->id_lang);
 
-if (!Validate::isLoadedObject($cms) OR !$cms->active) die('Not found');
+if (!Validate::isLoadedObject($cms)) die('Not found');
+if (property_exists('CMS','active') && (!$cms->active)) die('Not found');
 
 // mobilize fixes
 $mobilize_links = Tools::getValue('links');
@@ -32,11 +33,11 @@ $smarty->assign('head', $head);
 
 if ($skip_mobilize)
 {
-	$smarty->display('cms.tpl');
+	$smarty->display(dirname(__FILE__).'/cms.tpl');
 }
 else
 {
-	$html = $smarty->fetch('cms.tpl');
+	$html = $smarty->fetch(dirname(__FILE__).'/cms.tpl');
 	echo mobilize($html, $mobilize_links, $mobilize_img);
 }
 

@@ -17,7 +17,7 @@ For more information about plugin overrides, including code examples for common 
 
 ### Supported Prestashop Versions
 
-Currently the plugin has only been tested on Prestashop 1.4.x (1.4.7 and later to be exact).
+Currently the plugin has only been tested on Prestashop 1.4.x.
 
 
 Installation

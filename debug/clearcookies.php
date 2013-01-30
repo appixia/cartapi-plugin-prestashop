@@ -1,9 +1,12 @@
 <?php
 
-include(dirname(__FILE__).'/../../../config/config.inc.php');
-require_once(dirname(__FILE__).'/../../../init.php');
+if (isset($_REQUEST['logout']) && $_REQUEST['logout'])
+{
+	include(dirname(__FILE__).'/../../../config/config.inc.php');
+	require_once(dirname(__FILE__).'/../../../init.php');
 
-$cookie->logout();
+	$cookie->logout();
+}
 
 // unset cookies
 if (isset($_SERVER['HTTP_COOKIE'])) 

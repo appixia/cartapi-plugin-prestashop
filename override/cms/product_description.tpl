@@ -2,10 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
-	span {
-		color: #555555 !important;
-		line-height: normal !important;
-	}
+	/* add here any mobile-specific style overrides, usually with !important CSS modifier */
 </style>
 
 </head>

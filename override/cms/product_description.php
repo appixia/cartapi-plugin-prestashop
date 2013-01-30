@@ -13,6 +13,6 @@ if (!Validate::isLoadedObject($product)) exit(); // show nothing if not found
 $smarty->assign('product', $product);
 
 $smarty->force_compile = true; // remove after tpl debug
-$smarty->display('product_description.tpl');
+$smarty->display(dirname(__FILE__).'/product_description.tpl');
 
 ?>

@@ -53,6 +53,15 @@ class CartAPI_Handlers_Helpers
 	{
 		return CartAPI_Handlers_Helpers::getShopDomain() . __PS_BASE_URI__;
 	}
+
+	public static function isAbsoluteUrl($url)
+	{
+		$prefix = substr($url, 0, 5);
+		if ($prefix == 'http:') return true;
+		if ($prefix == 'https') return true;
+		if ($prefix == 'conf:') return true;
+		return false;
+	}
 	
 	public static function removeHtmlTagsFromString($string)
 	{
@@ -83,45 +92,18 @@ class CartAPI_Handlers_Helpers
 		
 		// language
 		if (isset($metadata['X-LANGUAGE'])) $_GET['isolang'] = $metadata['X-LANGUAGE'];
+
+		// currency
+		if (isset($metadata['X-CURRENCY']))
+		{
+			$_POST['SubmitCurrency'] = 1;
+			$_POST['id_currency'] = Currency::getIdByIsoCode($metadata['X-CURRENCY']);
+		}
 		
 		// register a new translation smarty function
 		global $smarty;
-		smartyRegisterFunction($smarty, 'function', 'l2', 'smartyTranslate2');
-	}
-	
-	public static function syncLocale($metadata)
-	{
-		global $cookie;
-		
-		// currency
-		$currency_id = false;
-		if (isset($metadata['X-CURRENCY'])) $currency_id = Currency::getIdByIsoCode($metadata['X-CURRENCY']);
-		if (!$currency_id) $currency_id = (int)(Configuration::get('PS_CURRENCY_DEFAULT'));
-		
-		// taken from Tools:setCurrency
-		$currency = Currency::getCurrencyInstance($currency_id);
-		if (is_object($currency) AND $currency->id AND $currency->active)
-			$cookie->id_currency = (int)($currency->id);
-			
-			
-		/* currently handled in preInit, may cause redirect loops if set manually
-		
-		// language
-		$language_id = false;
-		if (isset($metadata['X-LANGUAGE']) && Validate::isLanguageIsoCode($metadata['X-LANGUAGE'])) $language_id = Language::getIdByIso($metadata['X-LANGUAGE']);
-		if (!$language_id) $language_id = (int)(Configuration::get('PS_LANG_DEFAULT'));
-		
-		// taken from Tools:setCookieLanguage
-		$lang = new Language($language_id);
-		if (Validate::isLoadedObject($lang) AND $lang->active)
-		{
-			//header('Location: ignore://');
-			$cookie->id_lang = (int)($lang->id);
-			
-			@include_once(_PS_THEME_DIR_.'lang/'.$lang->iso_code.'.php');
-		}
-		*/
-		
+		if( function_exists('smartyRegisterFunction') ) smartyRegisterFunction($smarty, 'function', 'l2', 'smartyTranslate2');
+		else $smarty->register_function('l2', 'smartyTranslate2');
 	}
 	
 	public static function getLocale()
@@ -158,6 +140,12 @@ class CartAPI_Handlers_Helpers
 		// init the class
 		if (!class_exists($class_name, false)) CartAPI_Helpers::dieOnError($encoder, 'UnsupportedOperation', 'Cannot create instance of '.$handler.' handler');
 		return new $class_name();
+	}
+
+	public static function compatibilityMailTranslate($str, $id_lang)
+	{
+		if (method_exists('Mail','l')) return Mail::l($str, $id_lang);
+		else return $str; // older prestashop version don't have Mail:l and don't translate using it
 	}
 
 }

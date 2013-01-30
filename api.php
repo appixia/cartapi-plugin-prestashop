@@ -55,9 +55,6 @@ else
 if (!class_exists($class_name, false)) CartAPI_Helpers::dieOnError($request['encoder'], 'UnsupportedOperation', $operation.' not supported');
 $handler_instance = new $class_name();
 
-// sync the locale
-CartAPI_Handlers_Helpers::syncLocale($request['metadata']);
-
 // call the operation handler
 $handler_instance->{$func_name}($request['metadata'], $request['data'], $request['encoder']);
 

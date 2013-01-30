@@ -24,6 +24,10 @@ class CartAPI_Handlers_Categories
 			$sql_filters[] = CartAPI_Helpers::getSqlFilterFromFilter($encoder, $request['Filter'], $db_field_name_map);
 		}
 		
+		$sql_orderby = '`position` ASC'; // default sort (by db position)
+		if (!property_exists('Category','position')) $sql_orderby = '`name` ASC'; // older prestashop versions don't have the position field
+		$this->overrideCategoryListSqlOrderBy($request, $sql_orderby);
+
 		// complete the sql statement
 		$sql_filters[] = 'c.`active` = 1';
 		$sql_filters[] = 'cl.`id_lang` = '.(int)$id_lang;
@@ -34,12 +38,13 @@ class CartAPI_Handlers_Categories
 			LEFT JOIN `'._DB_PREFIX_.'category_lang` cl ON c.`id_category` = cl.`id_category` 
 			'.$sql_where.' 
 			GROUP BY `id_category`
-			ORDER BY `position` ASC
+			ORDER BY '.$sql_orderby.'
 			'.$sql_limit;
 
 		// load the categories and the total element count
 		$result = Db::getInstance()->ExecuteS($sql);
-		$total_elements = intval(array_pop(Db::getInstance()->getRow('SELECT FOUND_ROWS()')));
+		$total_elements_row = Db::getInstance()->getRow('SELECT FOUND_ROWS()');
+		$total_elements = intval(array_pop($total_elements_row));		
 		
 		// change results before they are returned
 		$this->overrideCategoryListResult($request, $result, $total_elements);
@@ -80,6 +85,11 @@ class CartAPI_Handlers_Categories
 			$filter['Value'] = $this->getRootCategoryId();
 		}
 	}
+
+	protected function overrideCategoryListSqlOrderBy($request, &$sql_orderby)
+	{
+		return; // do nothing by default
+	}
 	
 	protected function getRootCategoryId()
 	{
@@ -92,11 +102,19 @@ class CartAPI_Handlers_Categories
 		return 'medium';
 	}
 
+	protected function getImageUrl($name, $id_category, $type)
+	{
+		global $link;
+		$url = $link->getCatImageLink($name, $id_category, $type);
+		if (method_exists('Link','getMediaLink')) return $link->getMediaLink($url);
+		else return CartAPI_Handlers_Helpers::getShopDomain().$url; // older prestashop versions don't support media servers
+	}
+
 	protected function getThumbnailUrlFromImageId($image_id, $link_rewrite = NULL)
 	{
 		global $link;
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
-		return $link->getMediaLink($link->getCatImageLink($link_rewrite, $image_id, $this->getThumbnailImageType()));
+		return $this->getImageUrl($link_rewrite, $image_id, $this->getThumbnailImageType());
 	}
 
 	protected function addThumbnailUrlFromCategoryId($encoder, &$category, $category_id)
