@@ -1,4 +1,23 @@
 <?php
+/*
+* 
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0).
+* It is available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to info@appixia.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade this module to newer
+* versions in the future. If you wish to customize the module for your
+* needs please look at the /override module directory or refer to
+* http://kb.appixia.com for more information.
+*
+*/
 
 if (!defined('_PS_VERSION_'))
 	exit;
@@ -14,6 +33,7 @@ class AppixiaCartApi extends Module
 		$this->tab = 'Mobile';
 		$this->version = '1.0.1';
 		$this->author = 'Appixia';
+		$this->need_instance = 0;
 
 		parent::__construct();
 

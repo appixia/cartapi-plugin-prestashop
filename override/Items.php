@@ -1,12 +1,25 @@
 <?php
 
-// this is an example of an override class
+// this is an override class related to products (item details, item list)
+// if you need to customize the module to your needs, make all changes here
 
 require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Items.php');
 
 class CartAPI_Handlers_Override_Items extends CartAPI_Handlers_Items
 {
-	// 	override any functions you want to change here
+	// 	override any functions you want to change (from the core Items.php) here
+
+	// if you want to change the image type for product thumbnails, change it here
+	protected function getThumbnailImageType()
+	{
+		return 'home';
+	}
+
+	// if you want to change the image type for detailed product images (gallery), change it here
+	protected function getImagesImageType()
+	{
+		return 'thickbox';
+	}
 
 	// this is an example override to add the HTML description of an item to the item resources list
 	protected function getResourceDictionariesFromProduct($product, $id_lang)
