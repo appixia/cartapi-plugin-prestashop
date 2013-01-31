@@ -30,7 +30,7 @@ class AppixiaCartApi extends Module
 	public function __construct()
 	{
 		$this->name = 'appixiacartapi';
-		$this->tab = 'Mobile';
+		$this->tab = 'mobile';
 		$this->version = '1.0.1';
 		$this->author = 'Appixia';
 		$this->need_instance = 0;

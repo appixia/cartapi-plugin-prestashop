@@ -17,38 +17,38 @@ For more information about plugin overrides, including code examples for common 
 
 ### Supported Prestashop Versions
 
-Currently the plugin has only been tested on Prestashop 1.4.x.
+Prestashop 1.5.x - Tested on 1.5.0.17 through 1.5.3.1
+Prestashop 1.4.x - Tested on 1.4.0.1 through 1.4.9.0
+Prestashop 1.3.x - Tested on 1.3.0.1 through 1.3.7.0
 
 
 Installation
 ------------
 
-### Automatic Installation for Prestashop 1.4.x
+### Automatic Installation for Prestashop (all versions)
 
-1. Log into the Prestashop admin panel
-2. Go to the Modules tab
-3. Click on "Add a module from my computer"
-4. Under "Module URL" put:  
-   http://appixia.com/static/appixiacartapi_1.0.1_prestashop_1.4.x.zip  
-   If your server does not have ZIP installed put:  
-   http://appixia.com/static/appixiacartapi_1.0.1_prestashop_1.4.x.tar  
-   Click on the "Download this module" button.
-5. The module is installed automatically by Prestashop
+1. Download the the module package and save it on your computer (zip / tar)
+2. Log into the Prestashop admin panel
+3. Go to the Modules tab
+4. Click on "Add new module"
+   Under "Module file" choose either the zip file or tar file you've saved earlier
+   Click on the "Upload this module" button.
+5. The module is uploaded automatically by Prestashop
 6. Enable the module through the Prestashop admin panel by selecting it in the module list and pressing "Install"
 
-### Manual Installation for Prestashop 1.4.x
+### Manual Installation for Prestashop (all versions)
 
-1. Download the the plugin package and save it on your computer
+1. Download the the module package and save it on your computer
 2. Unzip the package to a temporary directory on your computer
 3. Copy the `/appixiacartapi` directory to the `/modules` directory of your Prestashop server, usually using FTP
 4. Enable the module through the Prestashop admin panel by selecting it in the module list and pressing "Install"
 
 ### Your Connection Details
 
-Connection details for Appixia Dashboard. If your Prestashop server homepage is on http://prestastore.com
+Connection details for Appixia Dashboard. If your Prestashop server homepage is on http://yourstore.com
 
-Store Home Url: http://prestastore.com  
-Your API Endpoint Url: http://prestastore.com/modules/appixiacartapi/api.php
+Store Home Url: http://yourstore.com  
+Your API Endpoint Url: http://yourstore.com/modules/appixiacartapi/api.php
 
 
 Plugin Core Classes For Override

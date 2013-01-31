@@ -125,6 +125,7 @@ class CartAPI_Handlers_Categories
 	{
 		global $link;
 		$url = $link->getCatImageLink($name, $id_category, $type);
+		if (CartAPI_Handlers_Helpers::isAbsoluteUrl($url)) return $url; // new prestashop versions (above 1.5) return an absolute url in getCatImageLink
 		if (method_exists('Link','getMediaLink')) return $link->getMediaLink($url);
 		else return CartAPI_Handlers_Helpers::getShopDomain().$url; // older prestashop versions don't support media servers
 	}
