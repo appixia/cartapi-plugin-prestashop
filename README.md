@@ -91,7 +91,7 @@ You can perform the requests to the Cart API web service yourself (without the m
 A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/overrides/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
 
 Here is an example of a request that the debugger generates:  
-http://prestastore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
+http://yourstore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
 
 If you want to see PHP notices and warnings, take a look in `Helpers.php` and edit the function `CartAPI_Handlers_Helpers::setServerNotices()`.
 
