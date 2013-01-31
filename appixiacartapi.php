@@ -31,7 +31,7 @@ class AppixiaCartApi extends Module
 	{
 		$this->name = 'appixiacartapi';
 		$this->tab = 'mobile';
-		$this->version = '1.0.1';
+		$this->version = '1.0.2';
 		$this->author = 'Appixia';
 		$this->need_instance = 0;
 
