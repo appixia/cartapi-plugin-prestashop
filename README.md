@@ -17,8 +17,8 @@ For more information about plugin overrides, including code examples for common 
 
 ### Supported Prestashop Versions
 
-Prestashop 1.5.x - Tested on 1.5.0.17 through 1.5.3.1
-Prestashop 1.4.x - Tested on 1.4.0.1 through 1.4.9.0
+Prestashop 1.5.x - Tested on 1.5.0.17 through 1.5.3.1  
+Prestashop 1.4.x - Tested on 1.4.0.1 through 1.4.9.0  
 Prestashop 1.3.x - Tested on 1.3.0.1 through 1.3.7.0
 
 
