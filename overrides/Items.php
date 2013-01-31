@@ -29,7 +29,7 @@ class CartAPI_Handlers_Override_Items extends CartAPI_Handlers_Items
 		$resource = array(
 			'Id' => 'Description',
 			'Type' => 'HTML',
-			'ContentUrl' => CartAPI_Handlers_Helpers::getCartApiHomeUrl().'override/cms/product_description.php?id_product='.(int)($product->id).'&',
+			'ContentUrl' => CartAPI_Handlers_Helpers::getCartApiHomeUrl().'overrides/cms/product_description.php?id_product='.(int)($product->id).'&',
 		);
 		$resources[] = $resource;
 		

@@ -11,7 +11,7 @@ The plugin is developed by Appixia Prestashop community and used as-is. The plug
 
 ### Merchant Plugin Overrides
 
-Many merchants require several customizations to the core Appixia Cart API plugin. These customizations have a special folder named `/override` inside the plugin. Integrators should place **all customizations** in this folder. The overrides mechanism is very similar to the Prestashop overrides mechanism. You can extend the core plugin classes and override functions that you wish to change. This development is done in PHP, since the Prestashop plugin is written in PHP.
+Many merchants require several customizations to the core Appixia Cart API plugin. These customizations have a special folder named `/overrides` inside the plugin. Integrators should place **all customizations** in this folder. The overrides mechanism is very similar to the Prestashop overrides mechanism. You can extend the core plugin classes and override functions that you wish to change. This development is done in PHP, since the Prestashop plugin is written in PHP.
 
 For more information about plugin overrides, including code examples for common overrides and other tutorials, please visit [Appixia Knowledgebase](http://kb.appixia.com/cart:plugin-overrides).
 
@@ -88,7 +88,7 @@ The main purpose of this plugin is to respond to Cart API requests (made by a mo
 
 You can perform the requests to the Cart API web service yourself (without the mobile app). This lets you see in your desktop browser the XML / JSON response. This is also very useful for debugging PHP errors and notices.
 
-A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/override/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
+A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/overrides/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
 
 Here is an example of a request that the debugger generates:  
 http://prestastore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
@@ -99,14 +99,14 @@ If you want to see PHP notices and warnings, take a look in `Helpers.php` and ed
 Plugin Folder Structure
 -----------------------
 
-Normally, the integrator would not make any modifications to the core Prestashop plugin (found in `/modules/appixiacartapi`), except of course for adding overrides under `/modules/appixiacartapi/override`. Nevertheless, you have the full core plugin source code in order to see which functions you can override. If you want to override something which is not available as a convenient function, please contact Appixia to have this functionality in the core plugin refactored.
+Normally, the integrator would not make any modifications to the core Prestashop plugin (found in `/modules/appixiacartapi`), except of course for adding overrides under `/modules/appixiacartapi/overrides`. Nevertheless, you have the full core plugin source code in order to see which functions you can override. If you want to override something which is not available as a convenient function, please contact Appixia to have this functionality in the core plugin refactored.
 
 ### Core Plugin Folder Structure
 
 `/modules/appixiacartapi/`  
-Root folder, includes implementations for all the core plugin classes (which you can override with your own implementation in the override folder).
+Root folder, includes implementations for all the core plugin classes (which you can override with your own implementation in the overrides folder).
 
-`/modules/appixiacartapi/override/`  
+`/modules/appixiacartapi/overrides/`  
 The most important folder for the integrator. This folder will hold all the changes you make to the Appixia Cart API plugin. All customizations for your specific store should be here.
 
 `/modules/appixiacartapi/modules`  
@@ -117,18 +117,18 @@ Core library code used mostly for encoding and decoding the Appixia Cart API web
 
 ### Plugin Overrides Folder Structure
 
-`/modules/appixiacartapi/override/`  
+`/modules/appixiacartapi/overrides/`  
 The root of the overrides. All the core classes which you wish to override will be placed here. The class file names are identical to the plugin core class file names.
 
-`/modules/appixiacartapi/override/cms/`  
+`/modules/appixiacartapi/overrides/cms/`  
 Several places in the mobile app display regular HTML content from the Prestashop website. For example, inside the product details additional sections (like product stylist or product look) are plain HTML. The code that renders these HTML files is found in this folder.
 
-`/modules/appixiacartapi/override/cms/assets/`  
+`/modules/appixiacartapi/overrides/cms/assets/`  
 Static files required by the templates in the `/cms` folder. Mostly mobile-specific versions of JS and CSS files.
 
 ### Other Important Core Plugin Files
 
-Most of the interesting plugin core files are found in /modules/appixiacartapi. As stated before, you should not make modifications to these core files. All of your changes should be placed in the override folder.
+Most of the interesting plugin core files are found in /modules/appixiacartapi. As stated before, you should not make modifications to these core files. All of your changes should be placed in the overrides folder.
 
 `api.php`  
 The main entry point for a Cart API call. The response is usually XML or JSON. The mobile app makes all of its API requests to this entry point. In order to debug, you can also make manual calls to this entry point using a regular desktop browser and see the responses (XML).
@@ -149,5 +149,5 @@ The module implementation for Prestashop. Mostly includes hooks the plugin makes
 The place where the mobile app is redirected when the hook catches a regular desktop web page render.
 
 `debug/debugger.php`  
-A helper tool for debugging Cart API requests using your desktop browser. This tool should only be used for development. The request templates for this tool are found in templates.php (in the same directory). You can create your own templates by editing `/override/debug/templates.php`.  
+A helper tool for debugging Cart API requests using your desktop browser. This tool should only be used for development. The request templates for this tool are found in templates.php (in the same directory). You can create your own templates by editing `/overrides/debug/templates.php`.  
 **It is recommended to delete or restrict access to the debug directory once your site goes live.**

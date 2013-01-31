@@ -22,7 +22,7 @@
 		echo '<option value="'.$template_name.'">'.$template_name.'</option>';
 	}
 	
-	$override_template_file = dirname(__FILE__).'/../override/debug/templates.php';
+	$override_template_file = dirname(__FILE__).'/../overrides/debug/templates.php';
 	if (file_exists($override_template_file))
 	{
 		include_once($override_template_file);

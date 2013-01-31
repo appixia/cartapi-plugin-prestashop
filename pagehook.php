@@ -14,7 +14,7 @@
 *
 * Do not edit or add to this file if you wish to upgrade this module to newer
 * versions in the future. If you wish to customize the module for your
-* needs please look at the /override module directory or refer to
+* needs please look at the /overrides module directory or refer to
 * http://kb.appixia.com for more information.
 *
 */

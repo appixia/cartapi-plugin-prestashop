@@ -14,7 +14,7 @@
 *
 * Do not edit or add to this file if you wish to upgrade this module to newer
 * versions in the future. If you wish to customize the module for your
-* needs please look at the /override module directory or refer to
+* needs please look at the /overrides module directory or refer to
 * http://kb.appixia.com for more information.
 *
 */
@@ -58,7 +58,7 @@ $handler_filename = $handler . '.php';
 $class_name = 'CartAPI_Handlers_'.$handler;
 
 // load the correct file
-if (!file_exists(dirname(__FILE__).'/override/'.$handler_filename)) 
+if (!file_exists(dirname(__FILE__).'/overrides/'.$handler_filename)) 
 {
 	// load the base
 	require_once(dirname(__FILE__).'/'.$handler_filename);
@@ -67,7 +67,7 @@ else
 {
 	// load the override
 	$class_name = 'CartAPI_Handlers_Override_'.$handler;
-	require_once(dirname(__FILE__).'/override/'.$handler_filename);
+	require_once(dirname(__FILE__).'/overrides/'.$handler_filename);
 }
 
 // init the class
