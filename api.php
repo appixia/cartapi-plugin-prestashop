@@ -77,4 +77,8 @@ $handler_instance = new $class_name();
 // call the operation handler
 $handler_instance->{$func_name}($request['metadata'], $request['data'], $request['encoder']);
 
+// call exit explicitly in case we have PHP auto appended files which can corrupt our XML response
+// see http://stackoverflow.com/questions/2268868/webhoster-inserts-a-javascript-which-brokes-my-code-how-to-remove-it
+exit();
+
 ?>
