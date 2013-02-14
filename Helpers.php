@@ -56,6 +56,10 @@ class CartAPI_Handlers_Helpers
 
 	public static function getShopDomain()
 	{
+		// use built-in method if found
+		if (method_exists('Tools', 'getShopDomain')) return Tools::getShopDomain(true);
+
+		// discover the domain ourselves
 		if (!($domain = Configuration::get('PS_SHOP_DOMAIN')))
 			$domain = Tools::getHttpHost();
 		return 'http://'.$domain;
