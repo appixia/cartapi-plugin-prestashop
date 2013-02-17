@@ -639,6 +639,11 @@ class CartAPI_Handlers_Order
 	
 	protected function addOrderShippingPrice($encoder, $order, &$updates)
 	{
+		// make sure we have a default carrier, else we don't want to return this field (we must wait for a carrier selection in checkout to show shipping costs then)
+		$defaultCarrierId = Configuration::get('PS_CARRIER_DEFAULT');
+		if ($defaultCarrierId === false) return; // not defined at all
+		if ($defaultCarrierId <= 0) return; // negative id means an algorithm (like best price/best grade) and not a specific carrier
+		
 		// get the current order shipping price
 		$currentShippingPrice = $this->getOrderShippingPrice();
 		
