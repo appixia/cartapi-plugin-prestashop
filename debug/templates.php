@@ -52,6 +52,16 @@ $GLOBALS['APPIXIA_DEBUGGER_TEMPLATES'] = array(
 		'Url' => '../cms/cms.php?id_cms=11&isolang=en&links=no&img=fix&',
 	),
 
+	'GetOrderUpdate - add simple product to cart' => array(
+		'Description' => 'Add a product (without variations) to cart (ItemId controls the id of the product being added)',
+		'Url' => '../api.php?X-OPERATION=GetOrderUpdate&Order[OrderItem][0][Id]=1&Order[OrderItem][0][Quantity]=1&Order[OrderItem][0][ItemId]=6&',
+	),
+
+	'GetOrderUpdate - add combination product to cart' => array(
+		'Description' => 'Add a product (with variations) to cart (ItemId controls the id of the product being added, Variation Id and ValueId control the combination)',
+		'Url' => '../api.php?X-OPERATION=GetOrderUpdate&Order[OrderItem][0][Id]=1&Order[OrderItem][0][Quantity]=1&Order[OrderItem][0][Combination][Variation][0][Id]=1&Order[OrderItem][0][Combination][Variation][0][ValueId]=15&Order[OrderItem][0][ItemId]=5&',
+	),
+
 );
 
 ?>

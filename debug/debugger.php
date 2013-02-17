@@ -50,9 +50,9 @@ If you don't, the debugger cookie might prevent you from seeing your regular sto
 <?php echo $GLOBALS['APPIXIA_DEBUGGER_TEMPLATES'][$firstkey]['Url']; ?>
 </textarea>
 
-<input type="button" id="sendbutton" value="Send"/>
-<input type="button" id="logoutclearbutton" value="Logout"/>
-<input type="button" id="clearbutton" value="Clear Cookies"/>
+<input type="button" id="sendbutton" value="Send" title="Send current command to plugin and see response in iframe below"/>
+<input type="button" id="logoutclearbutton" value="Logout" title="Cause current cart user to logout from the cart (opposite of BuyerLogin)"/>
+<input type="button" id="clearbutton" value="Clear Cookies" title="Clear cookies created during the debugging session"/>
 
 </div>
 

@@ -51,6 +51,17 @@ Store Home Url: http://yourstore.com
 Your API Endpoint Url: http://yourstore.com/modules/appixiacartapi/api.php
 
 
+Troubleshooting
+---------------
+
+Common issues with the module after installation are:
+
+* [Language and Currency](http://kb.appixia.com/cart:plugin-overrides-prestashop:language-currency)
+* [Not seeing the correct images for products/categories](http://kb.appixia.com/cart:plugin-overrides-prestashop:image-types)
+
+For more common issues, take a look [here](http://kb.appixia.com/cart:plugin-overrides-prestashop).
+
+
 Debugging Cart API Responses
 ---------------------------
 
@@ -81,23 +92,27 @@ The core plugin classes which you can override are found in `/modules/appixiacar
 #### Items.php
 In charge of everything related to products and product lists.  
 Handles the following Cart API operations:
+
 * `GetSingleItem` - returns detailed XML info about a single product using its id.
 * `GetItemList` - returns a paged list of products according to various filters.
 
 #### Categories.php
 In charge of everything related to categories and category lists.  
 Handles the following Cart API operations:
+
 * `GetCategoryList` - returns a list of categories according to various filters.
 
 #### Login.php
 In charge of login and register of new customers.  
 Handles the following Cart API operations:
+
 * `BuyerLogin` - logins a customer (either with username+password, or Facebook).
 * `BuyerRegister` - registers a new customer.
 
 #### Order.php
 In charge of the entire checkout process (from adding an item to the cart, to address and payment and creating an order on Prestashop itself). Please note that the term "order" under Appixia is closer to the "cart" term in Prestashop. An "order" under Appixia exists from the moment the customer added a product to the cart.  
 Handles the following Cart API operations:
+
 * `GetOrderUpdate` - takes a customer cart of items in some stage of the checkout process (an order), updates the internal Prestashop structures accordingly and replies with changes which need to be made to this "order" by the mobile app.
 * `GetShippingMethods` - takes a customer order and returns the possible shipping methods that they need to choose from.
 * `GetPaymentMethods` - takes a customer order and returns the possible payment methods that they need to choose from. 
