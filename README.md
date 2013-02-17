@@ -51,6 +51,28 @@ Store Home Url: http://yourstore.com
 Your API Endpoint Url: http://yourstore.com/modules/appixiacartapi/api.php
 
 
+Debugging Cart API Responses
+---------------------------
+
+The main purpose of this plugin is to respond to Cart API requests (made by a mobile app). When things don't work as expected, you may want to debug the plugin and see the responses for yourself. In addition, when developing overrides, debugging is essential as part of the development process. 
+
+You can perform the requests to the Cart API web service yourself (without the mobile app). This lets you see in your desktop browser the XML / JSON response. This is also very useful for debugging PHP errors and notices.
+
+A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/overrides/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
+
+Here is an example URL to access the debugger:  
+http://yourstore.com/modules/appixiacartapi/debug/debugger.php
+
+Here is an example of a request that the debugger generates (to the plugin):  
+http://yourstore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
+
+If you want to see PHP notices and warnings, take a look in `Helpers.php` and edit the function `CartAPI_Handlers_Helpers::setServerNotices()`.
+
+**It is recommended to clear cookies using the debugger's "Clear Cookies" button when you finish your debugging session. If you don't, the debugger cookie might prevent you from seeing your regular store in the browser that accessed the debugger. This issue can only happen in browsers that access the debugger, so don't worry, this can't happen to your users.**
+
+**It is recommended to delete or restrict access to the debug directory once your site goes live.**
+
+
 Plugin Core Classes For Override
 --------------------------------
 
@@ -79,21 +101,6 @@ Handles the following Cart API operations:
 * `GetOrderUpdate` - takes a customer cart of items in some stage of the checkout process (an order), updates the internal Prestashop structures accordingly and replies with changes which need to be made to this "order" by the mobile app.
 * `GetShippingMethods` - takes a customer order and returns the possible shipping methods that they need to choose from.
 * `GetPaymentMethods` - takes a customer order and returns the possible payment methods that they need to choose from. 
-
-
-Debugging Cart API Requests
----------------------------
-
-The main purpose of this plugin is to respond to Cart API requests (made by a mobile app). When things don't work as expected, you may want to debug the plugin and see the responses for yourself. In addition, when developing overrides, debugging is essential as part of the development process. 
-
-You can perform the requests to the Cart API web service yourself (without the mobile app). This lets you see in your desktop browser the XML / JSON response. This is also very useful for debugging PHP errors and notices.
-
-A convenient tool is bundled with the appixiacartapi plugin which helps debug Cart API web requests using your desktop web browser. It is found in `appixiacartapi/debug/debugger.php`. The tool shows a list of convenient API requests (request templates) and allows changing the URL parameters before sending the command to an iframe on the lower half of the page. You can add your own templates in `appixiacartapi/overrides/debug/templates.php`. We recommend using the **Firefox** web browser with this tool (since it provides native XML parsing of the response inside an iframe). It is recommended to delete or restrict access to the debug directory once your site goes live.
-
-Here is an example of a request that the debugger generates:  
-http://yourstore.com/modules/appixiacartapi/api.php?X-OPERATION=GetSingleItem&Id=124
-
-If you want to see PHP notices and warnings, take a look in `Helpers.php` and edit the function `CartAPI_Handlers_Helpers::setServerNotices()`.
 
 
 Plugin Folder Structure

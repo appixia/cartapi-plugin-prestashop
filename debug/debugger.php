@@ -10,6 +10,11 @@
 </head>
 <body>
 
+<div style="margin-bottom:10px; padding:10px; background-color:#f2dede; font-size:15px; color:#9d0000; border:1px solid #ea9aa8;">
+<b>IMPORTANT: When you finish your debugging session, press the "Clear Cookies" button below.</b><br>
+If you don't, the debugger cookie might prevent you from seeing your regular store in the browser that accessed the debugger. This issue can only happen in browsers that access the debugger, so don't worry, this can't happen to your users.
+</div>
+
 <div style="margin-bottom:10px;">
 
 <select id="templates" multiple="yes" style="width:300px; float: left; height:250px;">
