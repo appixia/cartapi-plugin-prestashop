@@ -85,6 +85,7 @@ class CartAPI_Handlers_Categories
 			$this->addContainsCategoriesFromCategoryId($encoder, $category, $row['id_category']);
 			$this->addThumbnailUrlFromCategoryId($encoder, $category, $row['id_category']);
 			$this->addResourcesFromCategoryId($encoder, $category, $row['id_category']);
+			$this->addExtraFieldsFromCategoryId($metadata, $request, $encoder, $category, $row['id_category']);
 		}
 
 		// show the response
@@ -197,6 +198,11 @@ class CartAPI_Handlers_Categories
 			$_resource = &$encoder->addContainerToArray($_resources);
 			foreach ($resource as $key => $value) $encoder->addString($_resource, $key, $value);
 		}
+	}
+
+	protected function addExtraFieldsFromCategoryId($metadata, $request, $encoder, &$category, $category_id)
+	{
+		// do nothing by default
 	}
 	
 }
