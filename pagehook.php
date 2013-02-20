@@ -26,15 +26,17 @@ require_once(dirname(__FILE__).'/Helpers.php');
 
 $url = CartAPI_Handlers_Helpers::getShopDomain() . $_REQUEST['q'];
 
-header('Location: bridge://SendMessageToParent/Url?'.urlencode($url));
-
 ?>
 
 <html>
 <body>
 
-<p>Appixia page hook, delete the "appixia" cookie if you dont want to see this.</p>
-<p>Original url: <?php echo $url ?></p>
+<iframe src="bridge://SendMessageToParent/Url?<?php echo urlencode($url); ?>" width="0" height="0" frameborder="0"></iframe>
+
+<p>Appixia page hook - you are seeing this because you have the "appixia" cookie. Did you use the debugger?</p>
+<p><a href="pagehookclear.php?url=<?php echo urlencode($url); ?>">Return to original website (clear cookie)</a></p>
+<br><br>
+<p>Original requested url:<br><?php echo $url ?></p>
 
 </body>
 </html>

@@ -31,7 +31,7 @@ class AppixiaCartApi extends Module
 	{
 		$this->name = 'appixiacartapi';
 		$this->tab = 'mobile';
-		$this->version = '1.0.2';
+		$this->version = '1.0.3';
 		$this->author = 'Appixia';
 		$this->need_instance = 0;
 
@@ -43,7 +43,12 @@ class AppixiaCartApi extends Module
 	
 	public function install()
 	{
+		// regular hooks
 		if (!parent::install() OR !$this->registerHook('header')) return false;
+		
+		// 1.5 specific hooks
+		if ((_PS_VERSION_ >= '1.5') && (!$this->registerHook('displayMobileHeader'))) return false;
+
 		return true;
 	}
 
@@ -54,10 +59,26 @@ class AppixiaCartApi extends Module
 	
 	public function hookHeader($params)
 	{
-		if (CartAPI_Handlers_Helpers::isAppixiaMobileEngine())
+		return $this->hijackPage();	
+	}
+
+	public function hookDisplayMobileHeader()
+	{
+		return $this->hijackPage();
+	}
+
+	// hijacking a page means not letting the app display this page in one of its HtmlViews
+	// for example, web pages may be displayed in the app during checkout (paypal.com mobile web checkout)
+	// if for some reason, these pages redirect the app back to the website, we want to let the app handle this redirect
+	// instead of showing the website inside the HtmlView
+	// in any case, hijacking is only done to appixia engines, so regular users will never be hijacked
+	public function hijackPage()
+	{
+		if (CartAPI_Handlers_Helpers::isAppixiaMobileEngine()) // only hijack appixia engines, not regular users
 		{
 			$url = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
-			Tools::redirect('modules/appixiacartapi/pagehook.php?q='.urlencode($url));
+			$redirectTo = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/appixiacartapi/pagehook.php?q='.urlencode($url);
+			header('Location: '.$redirectTo);
 			exit;
 		}
 	}
