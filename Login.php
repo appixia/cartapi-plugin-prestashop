@@ -195,7 +195,8 @@ class CartAPI_Handlers_Login
 	public function afterBuyerLogin($customer, $method = 'UserPassword')
 	{
 		// run the Prestashop hook
-		Module::hookExec('authentication');
+		if (_PS_VERSION_ < '1.5') Module::hookExec('authentication');
+		else Hook::exec('authentication');
 	}
 	
 	// default behavior, override if need to do something else
@@ -211,10 +212,8 @@ class CartAPI_Handlers_Login
 		}
 	
 		// run the Prestashop hook
-		Module::hookExec('createAccount', array(
-			'_POST' => $_POST,
-			'newCustomer' => $customer
-		));
+		if (_PS_VERSION_ < '1.5') Module::hookExec('createAccount', array('_POST' => $_POST, 'newCustomer' => $customer ));
+		else Hook::exec('createAccount', array('_POST' => $_POST, 'newCustomer' => $customer ));
 	}
 
 }
