@@ -14,38 +14,56 @@ class CartAPI_Module_PayPal extends PayPal
 		
 		$method['Title'] = 'PayPal';
 		$method['Description'] = 'Pay with your PayPal account';
+		$method['ThumbnailUrl'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/icon.png';
 		
 		// config the handling module in the mobile engine
 		
 		$method['Module'] = 'WebPaymentActivity';
 		$params = array();
 		
-		if (Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_INTEGRAL_EVOLUTION_)
+		// new paypal module (3.4.5)
+		if (defined('WPS') && defined('HSS') && defined('ECS'))
 		{
-			// integral_evolution/paypal.tpl
-			$params['Url'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/integral_evolution/redirect.php';
-			$params['CompleteTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__.'order-confirmation.php';
-			$params['CancelTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__;
-		}
-		elseif (Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_INTEGRAL_ OR Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_OPTION_PLUS_)
-		{
-			if ($this->_isPayPalAPIAvailable())
+			$paypal_method = (int)Configuration::get('PAYPAL_PAYMENT_METHOD');
+			if ($paypal_method == WPS || $paypal_method == ECS)
 			{
-				// payment/payment.tpl
-				$params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/payment/submit.php';
-				$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'order-confirmation.php';
-				$params['CancelTrigger'] = PayPal::getShopDomainSsl(true, true).__PS_BASE_URI__.'order'; // either order.php or order-opc.php
-				$params['RedirectTrigger'] = array(
-					'Trigger' => CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/payment/submit.php',
-					'Redirect' => CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/payment/error.php',
-				);
+				$cancel_url = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/express_checkout/cancel.php';
+				$params['Url'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/express_checkout/payment.php?express_checkout=payment_cart&current_shop_url='.urlencode($cancel_url).'&';
+				$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl();
+				$params['CancelTrigger'] = $cancel_url;
 			}
-			else
+		}
+
+		// old paypal module (2.8.6)
+		if (defined('_PAYPAL_INTEGRAL_EVOLUTION_') && defined('_PAYPAL_INTEGRAL_EVOLUTION_') && defined('_PAYPAL_INTEGRAL_EVOLUTION_'))
+		{
+			if (Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_INTEGRAL_EVOLUTION_)
 			{
-				// standard/paypal.tpl
-				$params['Url'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/standard/redirect.php';
+				// integral_evolution/paypal.tpl
+				$params['Url'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/integral_evolution/redirect.php';
 				$params['CompleteTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__.'order-confirmation.php';
 				$params['CancelTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__;
+			}
+			elseif (Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_INTEGRAL_ OR Configuration::get('PAYPAL_PAYMENT_METHOD') == _PAYPAL_OPTION_PLUS_)
+			{
+				if ($this->_isPayPalAPIAvailable())
+				{
+					// payment/payment.tpl
+					$params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/payment/submit.php';
+					$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'order-confirmation.php';
+					$params['CancelTrigger'] = PayPal::getShopDomainSsl(true, true).__PS_BASE_URI__.'order'; // either order.php or order-opc.php
+					$params['RedirectTrigger'] = array(
+						'Trigger' => CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/payment/submit.php',
+						'Redirect' => CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/payment/error.php',
+					);
+				}
+				else
+				{
+					// standard/paypal.tpl
+					$params['Url'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/paypal/standard/redirect.php';
+					$params['CompleteTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__.'order-confirmation.php';
+					$params['CancelTrigger'] = PayPal::getShopDomain(true, true).__PS_BASE_URI__;
+				}
 			}
 		}
 		
@@ -59,7 +77,17 @@ class CartAPI_Module_PayPal extends PayPal
 	public function Handle_GetOrderUpdateAfterPayment($order, $cartOrder, &$status)
 	{
 		// the original module's hookPaymentReturn is pretty much empty
-		$status = 'PayPalSuccess';
+
+		// added some checks based on the new paypal module (3.4.5), code taken from submit controller
+		global $cookie;
+		if (_PS_VERSION_ < '1.5') $order_state = new OrderState($cartOrder->id);
+		else $order_state = new OrderState($cartOrder->current_state);
+		$order_state_message = '';
+		if ($order_state) $order_state_message = $order_state->template[(int)($cookie->id_lang)];
+		
+		if ($order_state_message == 'payment_error') $status = 'PayPalError';
+		else $status = 'PayPalSuccess';
+		
 		$update = array();
 		$update['Status'] = $status;
 		return $update;

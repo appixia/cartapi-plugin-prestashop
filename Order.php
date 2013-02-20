@@ -217,7 +217,8 @@ class CartAPI_Handlers_Order
 		
 		// verify fields are valid
 		$customer = new Customer();
-		$errors = $customer->validateControler();
+		if (_PS_VERSION_ < '1.5') $errors = $customer->validateControler();
+		else $errors = $customer->validateController();
 		if (is_array($errors) && (count($errors) > 0)) CartAPI_Helpers::dieOnError($encoder, 'RegisterNotAuthorized', CartAPI_Handlers_Helpers::removeHtmlTags($errors[0]));
 		
 		// add the new user
@@ -519,7 +520,9 @@ class CartAPI_Handlers_Order
 		
 		// code taken from AddressController::preProcess
 		$address = new Address();
-		$errors = $address->validateControler();
+
+		if (_PS_VERSION_ < '1.5') $errors = $address->validateControler();
+		else $errors = $errors = $address->validateController();
 		
 		$address->id_customer = (int)($cookie->id_customer);
 
@@ -634,7 +637,11 @@ class CartAPI_Handlers_Order
 	protected function getOrderShippingPrice()
 	{
 		global $cart;
-		return Tools::ps_round($cart->getOrderShippingCost(), 2);
+
+		if (_PS_VERSION_ < '1.5') $shippingCost = $cart->getOrderShippingCost();
+		else $shippingCost = $cart->getTotalShippingCost();
+
+		return Tools::ps_round($shippingCost, 2);
 	}
 	
 	protected function addOrderShippingPrice($encoder, $order, &$updates)
@@ -939,25 +946,42 @@ class CartAPI_Handlers_Order
 	protected function validateGlobalCartDiscounts(&$errors, $reportErrors = false)
 	{
 		global $cart, $cookie;
-		
-		// code taken from CartController preProcess()
-	
-		$discounts = $cart->getDiscounts();					
-		foreach($discounts AS $discount)
+
+		if (_PS_VERSION_ < '1.5') 
 		{
-			$discountObj = new Discount((int)($discount['id_discount']), (int)($cookie->id_lang));
-			if ($error = $cart->checkDiscountValidity($discountObj, $discounts, $cart->getOrderTotal(true, Cart::ONLY_PRODUCTS), $cart->getProducts()))
+			// code taken from CartController preProcess()
+	
+			$discounts = $cart->getDiscounts();
+			foreach($discounts AS $discount)
 			{
-				$cart->deleteDiscount((int)($discount['id_discount']));
-				$cart->update();
-				
-				// reportErrors added to accomodate the initial checkDiscountValidity() in the beginning of CartController preProcess()
-				if ($reportErrors)
+				$discountObj = new Discount((int)($discount['id_discount']), (int)($cookie->id_lang));
+				if ($error = $cart->checkDiscountValidity($discountObj, $discounts, $cart->getOrderTotal(true, Cart::ONLY_PRODUCTS), $cart->getProducts()))
 				{
-					$errors[] = CartAPI_Handlers_Helpers::removeHtmlTags($error);
-					return false;
+					$cart->deleteDiscount((int)($discount['id_discount']));
+					$cart->update();
+					
+					// reportErrors added to accomodate the initial checkDiscountValidity() in the beginning of CartController preProcess()
+					if ($reportErrors)
+					{
+						$errors[] = CartAPI_Handlers_Helpers::removeHtmlTags($error);
+						return false;
+					}
 				}
 			}
+
+		}
+		else
+		{
+
+			// code taken from CartController processChangeProductInCart()
+
+			$more_errors = CartRule::autoRemoveFromCart();
+			if (count($more_errors) && $reportErrors)
+			{
+				$errors = array_merge($errors, $more_errors);
+				return false;
+			}
+
 		}
 		
 		return true;
