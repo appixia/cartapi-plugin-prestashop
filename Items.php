@@ -70,16 +70,16 @@ class CartAPI_Handlers_Items
 		global $cookie;
 		$id_lang = $cookie->id_lang;
 
-		// optional arguments
+		// allow to override filters before the command is executed
+		if (isset($request['Filter'])) $this->overrideItemListFilters($request['Filter']);
+
+		// go over the filters
 		$sql_filters = array();
-		if (isset($request['Filter']))
+		$filters = CartAPI_Helpers::getDictionaryKeyAsArray($request, 'Filter');
+		foreach ($filters as $filter)
 		{
-			// change filters before the command is executed
-			$this->overrideItemListFilters($request['Filter']);
-		
-			// TODO: support an array of filters, need to check how this works in the URL param decoder too.. may not be simple
 			$db_field_name_map = array('Title' => 'pl.`name`', 'CategoryId' => 'cp.`id_category`');
-			$sql_filters[] = CartAPI_Helpers::getSqlFilterFromFilter($encoder, $request['Filter'], $db_field_name_map);
+			$sql_filters[] = CartAPI_Helpers::getSqlFilterFromFilter($encoder, $filter, $db_field_name_map);
 		}
 		
 		$sql_orderby = 'p.`id_product` desc'; // default sort (newest items first)
