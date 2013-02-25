@@ -10,7 +10,7 @@ class CartAPI_Handlers_Override_Categories extends CartAPI_Handlers_Categories
 	// 	override any functions you want to change (from the core Categories.php) here
 
 	// if you want to change the image type for category thumbnails, change it here
-	protected function getThumbnailImageType()
+	public function getThumbnailImageType()
 	{
 		return 'large';
 	}

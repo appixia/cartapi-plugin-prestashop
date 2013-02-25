@@ -10,19 +10,19 @@ class CartAPI_Handlers_Override_Items extends CartAPI_Handlers_Items
 	// 	override any functions you want to change (from the core Items.php) here
 
 	// if you want to change the image type for product thumbnails, change it here
-	protected function getThumbnailImageType()
+	public function getThumbnailImageType()
 	{
 		return 'home';
 	}
 
 	// if you want to change the image type for detailed product images (gallery), change it here
-	protected function getImagesImageType()
+	public function getImagesImageType()
 	{
 		return 'thickbox';
 	}
 
 	// this is an example override to add the HTML description of an item to the item resources list
-	protected function getResourceDictionariesFromProduct($product, $id_lang)
+	public function getResourceDictionariesFromProduct($product, $id_lang)
 	{
 		$resources = array();
 		

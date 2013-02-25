@@ -92,12 +92,12 @@ class CartAPI_Handlers_Categories
 		$encoder->render($response);
 	}
 	
-	protected function overrideCategoryListResult($request, &$result, &$total_elements)
+	public function overrideCategoryListResult($request, &$result, &$total_elements)
 	{
 		return; // do nothing by default
 	}
 	
-	protected function overrideCategoryListFilters(&$filter)
+	public function overrideCategoryListFilters(&$filter)
 	{
 		// replace an empty parent with the root category
 		if (($filter['Field'] == 'ParentId') && ($filter['Value'] == ''))
@@ -106,23 +106,23 @@ class CartAPI_Handlers_Categories
 		}
 	}
 
-	protected function overrideCategoryListSqlOrderBy($request, &$sql_orderby)
+	public function overrideCategoryListSqlOrderBy($request, &$sql_orderby)
 	{
 		return; // do nothing by default
 	}
 	
-	protected function getRootCategoryId()
+	public function getRootCategoryId()
 	{
 		// the value 1 is hard-coded in Prestashop as root (under Category::getRootCategory)
 		return 1;
 	}
 	
-	protected function getThumbnailImageType()
+	public function getThumbnailImageType()
 	{
 		return 'large';
 	}
 
-	protected function getImageUrl($name, $id_category, $type)
+	public function getImageUrl($name, $id_category, $type)
 	{
 		global $link;
 		$url = $link->getCatImageLink($name, $id_category, $type);
@@ -131,20 +131,20 @@ class CartAPI_Handlers_Categories
 		else return CartAPI_Handlers_Helpers::getShopDomain().$url; // older prestashop versions don't support media servers
 	}
 
-	protected function getThumbnailUrlFromImageId($image_id, $link_rewrite = NULL)
+	public function getThumbnailUrlFromImageId($image_id, $link_rewrite = NULL)
 	{
 		global $link;
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
 		return $this->getImageUrl($link_rewrite, $image_id, $this->getThumbnailImageType());
 	}
 
-	protected function addThumbnailUrlFromCategoryId($encoder, &$category, $category_id)
+	public function addThumbnailUrlFromCategoryId($encoder, &$category, $category_id)
 	{
 		if (!file_exists(_PS_CAT_IMG_DIR_.$category_id.'.jpg')) return;
 		$encoder->addString($category, 'ThumbnailUrl', $this->getThumbnailUrlFromImageId($category_id));
 	}
 	
-	protected function getContainsItemsFromCategoryId($category_id)
+	public function getContainsItemsFromCategoryId($category_id)
 	{
 		$containsItems = false;
 		$sql = '
@@ -158,13 +158,13 @@ class CartAPI_Handlers_Categories
 		return $containsItems;
 	}
 
-	protected function addContainsItemsFromCategoryId($encoder, &$category, $category_id)
+	public function addContainsItemsFromCategoryId($encoder, &$category, $category_id)
 	{
 		$containsItems = $this->getContainsItemsFromCategoryId($category_id);
 		$encoder->addBoolean($category, 'ContainsItems', $containsItems);
 	}
 	
-	protected function getContainsCategoriesFromCategoryId($category_id)
+	public function getContainsCategoriesFromCategoryId($category_id)
 	{
 		$containsCategories = false;
 		$sql = '
@@ -177,18 +177,18 @@ class CartAPI_Handlers_Categories
 		return $containsCategories;
 	}
 
-	protected function addContainsCategoriesFromCategoryId($encoder, &$category, $category_id)
+	public function addContainsCategoriesFromCategoryId($encoder, &$category, $category_id)
 	{
 		$containsCategories = $this->getContainsCategoriesFromCategoryId($category_id);
 		$encoder->addBoolean($category, 'ContainsCategories', $containsCategories);
 	}
 	
-	protected function getResourceDictionariesFromCategoryId($category_id)
+	public function getResourceDictionariesFromCategoryId($category_id)
 	{
 		return array(); // do nothing by default
 	}
 	
-	protected function addResourcesFromCategoryId($encoder, &$category, $category_id)
+	public function addResourcesFromCategoryId($encoder, &$category, $category_id)
 	{
 		$resources = $this->getResourceDictionariesFromCategoryId($category_id);
 		if ((!is_array($resources)) || (count($resources) == 0)) return;
@@ -200,7 +200,7 @@ class CartAPI_Handlers_Categories
 		}
 	}
 
-	protected function addExtraFieldsFromCategoryId($metadata, $request, $encoder, &$category, $category_id)
+	public function addExtraFieldsFromCategoryId($metadata, $request, $encoder, &$category, $category_id)
 	{
 		// do nothing by default
 	}

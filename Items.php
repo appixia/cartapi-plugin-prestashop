@@ -143,22 +143,22 @@ class CartAPI_Handlers_Items
 		$encoder->render($response);
 	}
 	
-	protected function overrideItemListFilters(&$filter)
+	public function overrideItemListFilters(&$filter)
 	{
 		return; // do nothing by default
 	}
 	
-	protected function overrideItemListSqlOrderBy($request, &$sql_orderby)
+	public function overrideItemListSqlOrderBy($request, &$sql_orderby)
 	{
 		return; // do nothing by default
 	}
 		
-	protected function overrideItemListResult($request, &$result, &$total_elements)
+	public function overrideItemListResult($request, &$result, &$total_elements)
 	{
 		return; // do nothing by default
 	}
 
-	protected function addFeaturesFromProduct($encoder, &$item, $product, $id_lang)
+	public function addFeaturesFromProduct($encoder, &$item, $product, $id_lang)
 	{
 		$features = $product->getFrontFeatures($id_lang);
 		if (!is_array($features) || (count($features) == 0)) return;
@@ -172,22 +172,22 @@ class CartAPI_Handlers_Items
 	}
 	
 	// returns an array of arrays (resources)
-	protected function getResourceDictionariesFromProduct($product, $id_lang)
+	public function getResourceDictionariesFromProduct($product, $id_lang)
 	{
 		return array(); // do nothing by default
 	}
 	
-	protected function addExtraFieldsFromProductId($metadata, $request, $encoder, &$item, $product_id)
+	public function addExtraFieldsFromProductId($metadata, $request, $encoder, &$item, $product_id)
 	{
 		// do nothing by default
 	}
 	
-	protected function addExtraFieldsFromProduct($metadata, $request, $encoder, &$item, $product, $id_lang)
+	public function addExtraFieldsFromProduct($metadata, $request, $encoder, &$item, $product, $id_lang)
 	{
 		// do nothing by default
 	}
 	
-	protected function addResourcesFromProduct($encoder, &$item, $product, $id_lang)
+	public function addResourcesFromProduct($encoder, &$item, $product, $id_lang)
 	{
 		$resources = $this->getResourceDictionariesFromProduct($product, $id_lang);
 		if ((!is_array($resources)) || (count($resources) == 0)) return;
@@ -199,7 +199,7 @@ class CartAPI_Handlers_Items
 		}
 	}
 
-	protected function getImageUrl($name, $ids, $type)
+	public function getImageUrl($name, $ids, $type)
 	{
 		global $link;
 		$url = $link->getImageLink($name, $ids, $type); // older prestashop versions return a relative url here, so we must make sure it's absolute
@@ -207,51 +207,51 @@ class CartAPI_Handlers_Items
 		else return CartAPI_Handlers_Helpers::getShopDomain().$url;
 	}
 
-	protected function getThumbnailImageType()
+	public function getThumbnailImageType()
 	{
 		return 'home';
 	}
 
-	protected function getThumbnailUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
+	public function getThumbnailUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
 	{
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
 		if ($product_id != -1) $image_id = (int)$product_id . '-' . (int)$image_id;
 		return $this->getImageUrl($link_rewrite, $image_id, $this->getThumbnailImageType());
 	}
 
-	protected function getImagesImageType()
+	public function getImagesImageType()
 	{
 		return 'thickbox';
 	}
 
-	protected function getImageUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
+	public function getImageUrlFromImageId($image_id, $product_id = -1, $link_rewrite = NULL)
 	{
 		if ($link_rewrite === NULL) $link_rewrite = 'image';
 		if ($product_id != -1) $image_id = (int)$product_id . '-' . (int)$image_id;
 		return $this->getImageUrl($link_rewrite, $image_id, $this->getImagesImageType());
 	}
 
-	protected function getPriceFromProduct($product)
+	public function getPriceFromProduct($product)
 	{
 		return $product->getPrice(true, NULL, 2);
 	}
 
-	protected function getPriceFromProductId($product_id)
+	public function getPriceFromProductId($product_id)
 	{
 		return Product::getPriceStatic($product_id, true, NULL, 2);
 	}
 
-	protected function getReferencePriceFromProduct($product)
+	public function getReferencePriceFromProduct($product)
 	{
 		return Tools::ps_round($product->getPriceWithoutReduct(false, NULL), 2);
 	}
 
-	protected function getReferencePriceFromProductId($product_id)
+	public function getReferencePriceFromProductId($product_id)
 	{
 		return Product::getPriceStatic($product_id, true, NULL, 2, NULL, false, false);
 	}
 
-	protected function addThumbnailUrlFromProduct($encoder, &$item, $product)
+	public function addThumbnailUrlFromProduct($encoder, &$item, $product)
 	{
 		// taken from Product::getCoverWs - we're not using getCoverWs directly since it's not avail in old prestashop versions
 		$cover = $product->getCover($product->id);
@@ -260,23 +260,23 @@ class CartAPI_Handlers_Items
 		$encoder->addString($item, 'ThumbnailUrl', $this->getThumbnailUrlFromImageId($cover_image_id, $product->id));
 	}
 
-	protected function addThumbnailUrlFromProductId($encoder, &$item, $product_id)
+	public function addThumbnailUrlFromProductId($encoder, &$item, $product_id)
 	{
 		$cover_arr = Product::getCover($product_id);
 		if (is_array($cover_arr)) $encoder->addString($item, 'ThumbnailUrl', $this->getThumbnailUrlFromImageId(array_pop($cover_arr), $product_id));
 	}
 	
-	protected function getIsAvailableFromProduct($product)
+	public function getIsAvailableFromProduct($product)
 	{
 		return $product->checkQty(1);
 	}
 	
-	protected function addAvailabilityFromProduct($encoder, &$item, $product)
+	public function addAvailabilityFromProduct($encoder, &$item, $product)
 	{
 		$encoder->addBoolean($item, 'Available', (bool)$this->getIsAvailableFromProduct($product));
 	}
 
-	protected function addImageUrlFromProduct($encoder, &$item, $product, $id_lang)
+	public function addImageUrlFromProduct($encoder, &$item, $product, $id_lang)
 	{
 		$images = $product->getImages($id_lang);
 		if (!is_array($images) || (count($images) == 0)) return;
@@ -289,12 +289,12 @@ class CartAPI_Handlers_Items
 		}
 	}
 	
-	protected function addTitleFromProduct($encoder, &$item, $product)
+	public function addTitleFromProduct($encoder, &$item, $product)
 	{
 		$encoder->addString($item, 'Title', $product->name);
 	}
 
-	protected function addSubtitleFromProduct($encoder, &$item, $product)
+	public function addSubtitleFromProduct($encoder, &$item, $product)
 	{
 		if ($product->description_short) 
 		{
@@ -304,12 +304,12 @@ class CartAPI_Handlers_Items
 		}
 	}
 	
-	protected function overrideVariationDefaultValue($variationId, &$defaultValueId)
+	public function overrideVariationDefaultValue($variationId, &$defaultValueId)
 	{
 		return; // do nothing by default
 	}
 
-	protected function addVariationsAndCombinationsFromProduct($encoder, &$item, $product, $id_lang)
+	public function addVariationsAndCombinationsFromProduct($encoder, &$item, $product, $id_lang)
 	{
 		$attributesGroups = $product->getAttributesGroups($id_lang);
 		if (!is_array($attributesGroups) || (count($attributesGroups) == 0)) return;

@@ -21,7 +21,7 @@
 
 class CartAPI_Handlers_Order
 {
-	protected $SHIPPING_ADDRESS_ALIAS = 'Mobile';
+	public $SHIPPING_ADDRESS_ALIAS = 'Mobile';
 
 	public function Handle_GetOrderUpdate($metadata, $request, $encoder)
 	{
@@ -188,7 +188,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// dies if can't create account
-	protected function createCustomerGuestAccount($encoder, $buyerDictionary, $addressDictionary = array())
+	public function createCustomerGuestAccount($encoder, $buyerDictionary, $addressDictionary = array())
 	{
 		global $cookie;
 		
@@ -233,7 +233,7 @@ class CartAPI_Handlers_Order
 	
 	// override this function to handle special shipping methods and customize descriptions
 	// carrier is a row from Carrier::getCarriersForOrder
-	protected function getShippingMethodDictionaryFromCarrier($carrier)
+	public function getShippingMethodDictionaryFromCarrier($carrier)
 	{
 		$method = array();
 		
@@ -244,7 +244,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if not found
-	protected function getPaymentModuleInstance($moduleName)
+	public function getPaymentModuleInstance($moduleName)
 	{
 		$cartApiModuleFilename = dirname(__FILE__).'/modules/'.$moduleName.'/'.$moduleName.'.php';
 		$cartApiModuleClassname = 'CartAPI_Module_'.$moduleName;
@@ -254,7 +254,7 @@ class CartAPI_Handlers_Order
 		return new $cartApiModuleClassname();
 	}
 	
-	protected function addPaymentModuleOrderUpdateAfterPayment($encoder, &$updates, $order, $cartOrder, &$status)
+	public function addPaymentModuleOrderUpdateAfterPayment($encoder, &$updates, $order, $cartOrder, &$status)
 	{
 		// get module instance from the order
 		if (!isset($order['PaymentMethod'])) CartAPI_Helpers::dieOnError($encoder, 'InvalidOrder', 'PaymentMethod not set yet');
@@ -273,13 +273,13 @@ class CartAPI_Handlers_Order
 		$value = &$encoder->addPhpArray($update, 'Value', $updateValuePhpArray);
 	}
 	
-	protected function getAfterPaymentOrderUpdate($order, $cartOrder, $staus)
+	public function getAfterPaymentOrderUpdate($order, $cartOrder, $staus)
 	{
 		// do nothing by default, override if needed 
 		return false;
 	}
 	
-	protected function addAfterPaymentOrderUpdate($encoder, &$updates, $order, $cartOrder, $status)
+	public function addAfterPaymentOrderUpdate($encoder, &$updates, $order, $cartOrder, $status)
 	{
 		$updateValuePhpArray = $this->getAfterPaymentOrderUpdate($order, $cartOrder, $status);
 		if ($updateValuePhpArray === false) return;
@@ -290,7 +290,7 @@ class CartAPI_Handlers_Order
 		$value = &$encoder->addPhpArray($update, 'Value', $updateValuePhpArray);
 	}
 	
-	protected function getPaymentMethodDictionaries($order)
+	public function getPaymentMethodDictionaries($order)
 	{
 		$paymentMethodDictionaries = array();
 		$result = Module::getPaymentModules();
@@ -317,7 +317,7 @@ class CartAPI_Handlers_Order
 		return $paymentMethodDictionaries;
 	}
 	
-	protected function getCarriers()
+	public function getCarriers()
 	{
 		global $cookie, $cart;
 		
@@ -329,7 +329,7 @@ class CartAPI_Handlers_Order
 		return $carriers;
 	}
 	
-	protected function syncGlobalCartCarrierWithOrder($order)
+	public function syncGlobalCartCarrierWithOrder($order)
 	{
 		global $cart;
 		
@@ -347,7 +347,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false on failure
-	protected function convertCartAddressToApiAddressDictionary($cartAddress)
+	public function convertCartAddressToApiAddressDictionary($cartAddress)
 	{
 		$apiAddress = array();
 		if (!is_object($cartAddress)) return false; // instead of Validate::isLoadedObject since we don't always have an id
@@ -378,7 +378,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if not found
-	protected function getCustomerDefaultShippingAddressId($alias = NULL)
+	public function getCustomerDefaultShippingAddressId($alias = NULL)
 	{
 		global $cookie;
 		
@@ -409,7 +409,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if not found
-	protected function getCustomerDefaultShippingAddressDictionary()
+	public function getCustomerDefaultShippingAddressDictionary()
 	{
 		$id_address = $this->getCustomerDefaultShippingAddressId();
 		if ($id_address === false) return false;
@@ -417,7 +417,7 @@ class CartAPI_Handlers_Order
 		return $this->convertCartAddressToApiAddressDictionary($cartAddress);
 	}
 	
-	protected function addAddress($encoder, &$container, $fieldname, $addressDictionary)
+	public function addAddress($encoder, &$container, $fieldname, $addressDictionary)
 	{
 		$address = &$encoder->addContainer($container, $fieldname);
 		$encoder->addString($address, 'FirstName', $addressDictionary['FirstName']);
@@ -432,7 +432,7 @@ class CartAPI_Handlers_Order
 		$encoder->addString($address, 'State', $addressDictionary['State']);
 	}
 	
-	protected function addShippingAddressOrderUpdate($encoder, &$updates, $addressDictionary)
+	public function addShippingAddressOrderUpdate($encoder, &$updates, $addressDictionary)
 	{
 		if ($addressDictionary === false) return;
 		$update = &$encoder->addContainerToArray($updates);
@@ -441,7 +441,7 @@ class CartAPI_Handlers_Order
 		$this->addAddress($encoder, $value, 'ShippingAddress', $addressDictionary);
 	}
 	
-	protected function isIdenticalAddressDictionary($address1, $address2)
+	public function isIdenticalAddressDictionary($address1, $address2)
 	{
 		// compare both ways
 		foreach ($address1 as $key => $value1)
@@ -463,7 +463,7 @@ class CartAPI_Handlers_Order
 		return true;
 	}
 	
-	protected function createCustomerAddressIdFromCartAddress($encoder, $address)
+	public function createCustomerAddressIdFromCartAddress($encoder, $address)
 	{
 		$old_address_id = $this->getCustomerDefaultShippingAddressId($address->alias);
 		
@@ -491,7 +491,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// dies if there is a problem, returns cartAddress object
-	protected function validateAddressDictionary($encoder, $addressDictionary)
+	public function validateAddressDictionary($encoder, $addressDictionary)
 	{
 		global $cookie;
 		
@@ -581,7 +581,7 @@ class CartAPI_Handlers_Order
 		return $address;
 	}
 	
-	protected function syncGlobalCartShippingAddressWithOrder($encoder, $order)
+	public function syncGlobalCartShippingAddressWithOrder($encoder, $order)
 	{
 		global $cart;
 		
@@ -613,13 +613,13 @@ class CartAPI_Handlers_Order
 		$cart->update();
 	}
 	
-	protected function getOrderTotalPrice()
+	public function getOrderTotalPrice()
 	{
 		global $cart;
 		return Tools::ps_round($cart->getOrderTotal(), 2);
 	}
 	
-	protected function addOrderTotalPrice($encoder, $order, &$updates)
+	public function addOrderTotalPrice($encoder, $order, &$updates)
 	{
 		// get the current order total
 		$currentTotalPrice = $this->getOrderTotalPrice();
@@ -634,7 +634,7 @@ class CartAPI_Handlers_Order
 		$encoder->addNumber($value, 'TotalPrice', $currentTotalPrice);
 	}
 	
-	protected function getOrderShippingPrice()
+	public function getOrderShippingPrice()
 	{
 		global $cart;
 
@@ -644,7 +644,7 @@ class CartAPI_Handlers_Order
 		return Tools::ps_round($shippingCost, 2);
 	}
 	
-	protected function addOrderShippingPrice($encoder, $order, &$updates)
+	public function addOrderShippingPrice($encoder, $order, &$updates)
 	{
 		// make sure we have a default carrier, else we don't want to return this field (we must wait for a carrier selection in checkout to show shipping costs then)
 		$defaultCarrierId = Configuration::get('PS_CARRIER_DEFAULT');
@@ -664,13 +664,13 @@ class CartAPI_Handlers_Order
 		$encoder->addNumber($value, 'ShippingPrice', $currentShippingPrice);
 	}
 	
-	protected function getOrderTotalItemPrice()
+	public function getOrderTotalItemPrice()
 	{
 		global $cart;
 		return Tools::ps_round($cart->getOrderTotal(true, Cart::ONLY_PRODUCTS), 2);
 	}
 	
-	protected function addOrderTotalItemPricePrice($encoder, $order, &$updates)
+	public function addOrderTotalItemPricePrice($encoder, $order, &$updates)
 	{
 		// get the current order total item price
 		$currentTotalItemPrice = $this->getOrderTotalItemPrice();
@@ -686,7 +686,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false on failure
-	protected function getGlobalCartOrder()
+	public function getGlobalCartOrder()
 	{
 		global $cart;
 	
@@ -698,7 +698,7 @@ class CartAPI_Handlers_Order
 		return $cartOrder;
 	}
 	
-	protected function addGlobalCartIdOrderUpdate($encoder, &$updates)
+	public function addGlobalCartIdOrderUpdate($encoder, &$updates)
 	{
 		global $cart, $cookie;
 		
@@ -721,7 +721,7 @@ class CartAPI_Handlers_Order
 	// since FrontController zeroes it after an order is placed, therefore we must rely on our own Id
 	// we use the order Id as the cart id
 	// returns false if unable to sync (a cart id does not exist yet), true if everything is ok
-	protected function syncGlobalCartIdWithOrder($order)
+	public function syncGlobalCartIdWithOrder($order)
 	{
 		global $cart, $cookie;
 		
@@ -738,7 +738,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if can't change, optional detailed error message in $errors (out)
-	protected function verifyGlobalCartCanChange(&$errors = array())
+	public function verifyGlobalCartCanChange(&$errors = array())
 	{
 		global $cart;
 		
@@ -753,7 +753,7 @@ class CartAPI_Handlers_Order
 	
 	// adds OrderUpdates if $updates is given (on sync problems)
 	// if $updates not given, show die on sync problems
-	protected function syncGlobalCartProductsWithOrder($encoder, $order, &$updates = null)
+	public function syncGlobalCartProductsWithOrder($encoder, $order, &$updates = null)
 	{
 		global $cart;
 		
@@ -840,7 +840,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// takes the items currently found in the cart and adds them as an order update
-	protected function addOrderItemsOrderUpdateFromGlobalCart($encoder, &$updates, $messages = null)
+	public function addOrderItemsOrderUpdateFromGlobalCart($encoder, &$updates, $messages = null)
 	{
 		global $cart;
 	
@@ -879,7 +879,7 @@ class CartAPI_Handlers_Order
 	
 	// if encounters errors, returns them in $errors (out)
 	// returns false if the update failed
-	protected function updateGlobalCartProductQuantity($quantityDelta, $productId, $productAttributeId, &$errors)
+	public function updateGlobalCartProductQuantity($quantityDelta, $productId, $productAttributeId, &$errors)
 	{
 		global $cookie;
 	
@@ -907,7 +907,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if process failed, returns the errors in $errors (out)
-	protected function processGlobalCartProductQuantityUpdate($op, $qty, $producToAdd, $idProduct, $idProductAttribute, &$errors)
+	public function processGlobalCartProductQuantityUpdate($op, $qty, $producToAdd, $idProduct, $idProductAttribute, &$errors)
 	{
 		global $cart;
 		
@@ -943,7 +943,7 @@ class CartAPI_Handlers_Order
 	
 	// returns false if process failed, returns the errors in $errors (out)
 	// $reportErrors default changed to false because of Prestashop 1.4.7.0 CartController line 236 ($errors and not $this->errors, bug?!)
-	protected function validateGlobalCartDiscounts(&$errors, $reportErrors = false)
+	public function validateGlobalCartDiscounts(&$errors, $reportErrors = false)
 	{
 		global $cart, $cookie;
 
@@ -988,7 +988,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if validate failed, returns the errors in $errors (out)
-	protected function validateGlobalCartProductQuantityUpdate($add, $delete, $qty, $producToAdd, $idProduct, $idProductAttribute, &$errors)
+	public function validateGlobalCartProductQuantityUpdate($add, $delete, $qty, $producToAdd, $idProduct, $idProductAttribute, &$errors)
 	{
 		global $cookie, $cart;
 	
@@ -1047,7 +1047,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// internal function needed by the min quantity fix (add the min quantity when too little added)
-	protected function getCurrentGlobalCartProductQuantity($idProduct, $idProductAttribute = null)
+	public function getCurrentGlobalCartProductQuantity($idProduct, $idProductAttribute = null)
 	{
 		global $cart;
 		
@@ -1057,7 +1057,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns an array with id_product, id_product_attribute
-	protected function getCartProductsFromCartId($cart_id)
+	public function getCartProductsFromCartId($cart_id)
 	{
 		$sql = '
 			SELECT `id_product`, `id_product_attribute`, `quantity`
@@ -1069,7 +1069,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if not found
-	protected function getProductAttributeIdFromOrderItem($orderItem)
+	public function getProductAttributeIdFromOrderItem($orderItem)
 	{
 		if (!isset($orderItem['ItemId'])) return false;
 		$itemId = $orderItem['ItemId'];
@@ -1114,7 +1114,7 @@ class CartAPI_Handlers_Order
 	}
 	
 	// returns false if not found
-	protected function getOrderItemCombinationDictionaryFromProductAttributeId($productAttributeId)
+	public function getOrderItemCombinationDictionaryFromProductAttributeId($productAttributeId)
 	{
 		// get all the attribute combinations for this product
 		$sql = '
