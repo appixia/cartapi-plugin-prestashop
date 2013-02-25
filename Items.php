@@ -362,6 +362,8 @@ class CartAPI_Handlers_Items
 		
 		// check if the product is available when out of stock, and only if not, we need to check quantity of each combination
 		$shouldCheckCombinationAvailability = !$product->isAvailableWhenOutOfStock($product->out_of_stock);
+		// get the default product price
+		$defaultProductPrice = $this->getPriceFromProduct($product);
 	
 		// add the variations
 		$_variations = &$encoder->addArray($item, 'Variation');
@@ -436,6 +438,13 @@ class CartAPI_Handlers_Items
 			{
 				if ($combination['quantity'] > 0) $encoder->addBoolean($_override, 'Available', true);
 				else $encoder->addBoolean($_override, 'Available', false);
+			}
+
+			// price override
+			$combinationPrice = $product->getPrice(true, $id_product_attribute, 2);
+			if ($combinationPrice != $defaultProductPrice)
+			{
+				$encoder->addNumber($_override, 'Price', $combinationPrice);
 			}
 		
 			// add more overrides..
