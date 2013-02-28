@@ -100,6 +100,7 @@ class CartAPI_Handlers_Login
 		$cookie->customer_lastname = $customer->lastname;
 		$cookie->customer_firstname = $customer->firstname;
 		$cookie->logged = 1;
+		if (property_exists('Customer', 'logged')) $customer->logged = 1;
 		if (method_exists('Customer','isGuest')) $cookie->is_guest = $customer->isGuest();
 		$cookie->passwd = $customer->passwd;
 		$cookie->email = $customer->email;
@@ -161,7 +162,8 @@ class CartAPI_Handlers_Login
 	
 		// verify fields are valid
 		$customer = new Customer();
-		$errors = $customer->validateControler();
+		if (_PS_VERSION_ < '1.5') $errors = $customer->validateControler();
+		else $errors = $customer->validateController();
 		if (is_array($errors) && (count($errors) > 0)) CartAPI_Helpers::dieOnError($encoder, 'RegisterNotAuthorized', CartAPI_Handlers_Helpers::removeHtmlTags($errors[0]));
 	
 		// make sure the customer doesn't already exist
@@ -196,7 +198,7 @@ class CartAPI_Handlers_Login
 	{
 		// run the Prestashop hook
 		if (_PS_VERSION_ < '1.5') Module::hookExec('authentication');
-		else Hook::exec('authentication');
+		else Hook::exec('actionAuthentication');
 	}
 	
 	// default behavior, override if need to do something else
@@ -213,7 +215,7 @@ class CartAPI_Handlers_Login
 	
 		// run the Prestashop hook
 		if (_PS_VERSION_ < '1.5') Module::hookExec('createAccount', array('_POST' => $_POST, 'newCustomer' => $customer ));
-		else Hook::exec('createAccount', array('_POST' => $_POST, 'newCustomer' => $customer ));
+		else Hook::exec('actionCustomerAccountAdd', array('_POST' => $_POST, 'newCustomer' => $customer ));
 	}
 
 }

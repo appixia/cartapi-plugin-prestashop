@@ -76,6 +76,10 @@ class CartAPI_Handlers_Order
 			{
 				$this->addShippingAddressOrderUpdate($encoder, $updates, $fixedAddressDictionary);
 			}
+
+			// sync our shipping address with the cart (and create the address in the db if needed)
+			$this->syncGlobalCartShippingAddress($encoder, $fixedAddressDictionary);
+
 		}
 		else // we don't have a shipping address in the order
 		{
@@ -123,9 +127,6 @@ class CartAPI_Handlers_Order
 		
 		// make sure the global cart is synchronized with this order
 		$this->syncGlobalCartProductsWithOrder($encoder, $request['Order']);
-		
-		// sync our shipping address with the cart (and create the address in the db if needed)
-		$this->syncGlobalCartShippingAddressWithOrder($encoder, $request['Order']);
 		
 		// get the carriers
 		$result = $this->getCarriers();
@@ -407,14 +408,20 @@ class CartAPI_Handlers_Order
 		
 		return $address_id;
 	}
+
+	// returns false if not found
+	public function getAddressDictionaryFromAddressId($id_address)
+	{
+		if ($id_address === false) return false;
+		$cartAddress = new Address((int)$id_address);
+		return $this->convertCartAddressToApiAddressDictionary($cartAddress);
+	}
 	
 	// returns false if not found
 	public function getCustomerDefaultShippingAddressDictionary()
 	{
 		$id_address = $this->getCustomerDefaultShippingAddressId();
-		if ($id_address === false) return false;
-		$cartAddress = new Address((int)$id_address);
-		return $this->convertCartAddressToApiAddressDictionary($cartAddress);
+		return $this->getAddressDictionaryFromAddressId($id_address);
 	}
 	
 	public function addAddress($encoder, &$container, $fieldname, $addressDictionary)
@@ -581,20 +588,29 @@ class CartAPI_Handlers_Order
 		return $address;
 	}
 	
-	public function syncGlobalCartShippingAddressWithOrder($encoder, $order)
+	public function syncGlobalCartShippingAddress($encoder, $addressDictionary)
 	{
 		global $cart;
 		
-		if (!isset($order['ShippingAddress'])) return;
+		if (empty($addressDictionary)) return;
 		
 		// we will sync the cart with this address id
 		$address_id = false;
 		
+		// check if the current cart address is identical to the one we were given, and if so return because no change needed
+		if ($cart->id_address_delivery)
+		{
+			$currentCartAddress = $this->getAddressDictionaryFromAddressId($cart->id_address_delivery);
+			if (($currentCartAddress !== false) && $this->isIdenticalAddressDictionary($currentCartAddress, $addressDictionary)) return;
+		}
+
+		// if here - we are changing the cart address
+
 		// get the default customer shipping address
 		$defaultCustomerAddress = $this->getCustomerDefaultShippingAddressDictionary();
 		
 		// check if the buyer is using his default address
-		if (($defaultCustomerAddress !== false) && $this->isIdenticalAddressDictionary($defaultCustomerAddress, $order['ShippingAddress']))
+		if (($defaultCustomerAddress !== false) && $this->isIdenticalAddressDictionary($defaultCustomerAddress, $addressDictionary))
 		{
 			// buyer didn't change the default address, let's use it
 			$address_id = $this->getCustomerDefaultShippingAddressId();
@@ -602,7 +618,7 @@ class CartAPI_Handlers_Order
 		else
 		{
 			// buyer changed the address, this means the address isn't in the db, we need to add it
-			$cartAddress = $this->validateAddressDictionary($encoder, $order['ShippingAddress']);
+			$cartAddress = $this->validateAddressDictionary($encoder, $addressDictionary);
 			$address_id = $this->createCustomerAddressIdFromCartAddress($encoder, $cartAddress);
 		}
 		
