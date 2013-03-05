@@ -30,7 +30,7 @@ class CartAPI_Handlers_Items
 		// load the product
 		global $cookie;
 		$id_lang = $cookie->id_lang;
-		$product = new Product($request['Id'], false, $id_lang);
+		$product = $this->getProductFromProductId($request['Id'], $id_lang);
 		if (!Validate::isLoadedObject($product)) CartAPI_Helpers::dieOnError($encoder, 'ItemNotFound', Tools::displayError('Product not found'));
 
 		// create the response
@@ -197,6 +197,11 @@ class CartAPI_Handlers_Items
 			$_resource = &$encoder->addContainerToArray($_resources);
 			foreach ($resource as $key => $value) $encoder->addString($_resource, $key, $value);
 		}
+	}
+
+	public function getProductFromProductId($product_id, $id_lang)
+	{
+		return new Product($product_id, false, $id_lang);
 	}
 
 	public function getImageUrl($name, $ids, $type)
