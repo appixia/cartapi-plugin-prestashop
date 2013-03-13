@@ -58,6 +58,7 @@ Common issues with the module after installation are:
 
 * [Language and Currency](http://kb.appixia.com/cart:plugin-overrides-prestashop:language-currency)
 * [Not seeing the correct images for products/categories](http://kb.appixia.com/cart:plugin-overrides-prestashop:image-types)
+* [Cannot connect to module - connect test always fails](http://kb.appixia.com/cart:plugins-prestashop:cannot-connect)
 
 For more common issues, take a look [here](http://kb.appixia.com/cart:plugin-overrides-prestashop).
 
