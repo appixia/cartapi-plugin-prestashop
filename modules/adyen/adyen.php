@@ -15,6 +15,7 @@ class CartAPI_Module_Adyen extends Adyen
 		
 		$method['Title'] = 'Adyen';
 		$method['Description'] = 'Pay with your credit card';
+		$method['ThumbnailUrl'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/adyen/icon.png';
 		
 		// config the handling module in the mobile engine
 		

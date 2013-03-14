@@ -14,6 +14,7 @@ class CartAPI_Module_Cuatrob extends cuatrob
 		
 		$method['Title'] = 'Pago con tarjeta';
 		$method['Description'] = 'Conexion segura con Pasat 4B';
+		$method['ThumbnailUrl'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/cuatrob/icon.png';
 		
 		// config the handling module in the mobile engine
 		

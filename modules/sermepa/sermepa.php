@@ -15,6 +15,7 @@ class CartAPI_Module_Sermepa extends Sermepa
 		
 		$method['Title'] = 'Sermepa';
 		$method['Description'] = 'Pay with your credit card';
+		$method['ThumbnailUrl'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/sermepa/icon.png';
 		
 		// config the handling module in the mobile engine
 		
