@@ -66,6 +66,14 @@ class CartAPI_Module_PayPal extends PayPal
 				}
 			}
 		}
+
+		// very old paypal (2.0 and below)
+		if (empty($params))
+		{
+			$params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/old/hookpayment.php';
+			$params['CompleteTrigger'] = 'http://'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'order-confirmation.php';
+			$params['CancelTrigger'] = 'http://'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'index.php';
+		}
 		
 		$method['ModuleParameters'] = $params;
 		
