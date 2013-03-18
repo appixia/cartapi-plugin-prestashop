@@ -20,7 +20,7 @@ else $skip_mobilize = true;
 
 // add css
 $head = '';
-$css_relpath = '../override/cms/cms.css';
+$css_relpath = '../overrides/cms/cms.css';
 $css_file = dirname(__FILE__).'/'.$css_relpath;
 if (file_exists($css_file))
 {
