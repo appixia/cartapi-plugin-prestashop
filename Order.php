@@ -234,7 +234,7 @@ class CartAPI_Handlers_Order
 	
 	// override this function to handle special shipping methods and customize descriptions
 	// carrier is a row from Carrier::getCarriersForOrder
-	public function getShippingMethodDictionaryFromCarrier($carrier)
+	public function getShippingMethodDictionaryFromCarrier(&$carrier)
 	{
 		$method = array();
 		
