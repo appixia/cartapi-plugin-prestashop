@@ -22,8 +22,8 @@ class CartAPI_Module_BankWire extends BankWire
 		
 		$params = array();
 		$params['Url'] = $params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/bankwire/validation.php';
-		$params['CompleteTrigger'] = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.'order-confirmation.php';
-		$params['CancelTrigger'] = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.'order.php';
+		$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'order-confirmation.php';
+		$params['CancelTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'order.php';
 		$method['ModuleParameters'] = $params;
 		
 		return $method;

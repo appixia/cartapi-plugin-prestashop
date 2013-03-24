@@ -71,8 +71,8 @@ class CartAPI_Module_PayPal extends PayPal
 		if (empty($params))
 		{
 			$params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/paypal/old/hookpayment.php';
-			$params['CompleteTrigger'] = 'http://'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'order-confirmation.php';
-			$params['CancelTrigger'] = 'http://'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'index.php';
+			$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl().'order-confirmation.php';
+			$params['CancelTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl();
 		}
 		
 		$method['ModuleParameters'] = $params;

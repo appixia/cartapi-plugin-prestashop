@@ -22,7 +22,7 @@ class CartAPI_Module_Servired extends servired
 		
 		$params = array();
 		$params['Url'] = CartAPI_Handlers_Helpers::getCartApiHomeUrl().'modules/servired/hookpayment.php';
-		$params['CompleteTrigger'] = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__;
+		$params['CompleteTrigger'] = CartAPI_Handlers_Helpers::getShopBaseUrl();
 		$method['ModuleParameters'] = $params;
 		
 		return $method;
