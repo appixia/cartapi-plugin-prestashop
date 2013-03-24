@@ -25,18 +25,31 @@ class CartAPI_Handlers_Helpers
 	
 	public static function isAppixiaMobileEngine()
 	{
-		if (isset($_COOKIE[self::$APPIXIA_COOKIE_NAME]) && ($_COOKIE[self::$APPIXIA_COOKIE_NAME] == 1)) return true;
+		global $cookie;
+		if (isset($cookie)) 
+		{
+			if ($cookie->{self::$APPIXIA_COOKIE_NAME} == 1) return true;
+		}
+
 		return false;
 	}
 	
 	public static function setAppixiaMobileEngine()
 	{
-		setcookie(self::$APPIXIA_COOKIE_NAME, 1, 0, '/');
+		global $cookie;
+		if (isset($cookie)) 
+		{
+			if ($cookie->{self::$APPIXIA_COOKIE_NAME} != 1) $cookie->{self::$APPIXIA_COOKIE_NAME} = 1;
+		}
 	}
 	
 	public static function unsetAppixiaMobileEngine()
 	{
-		setcookie(self::$APPIXIA_COOKIE_NAME);
+		global $cookie;
+		if (isset($cookie)) 
+		{
+			unset($cookie->{self::$APPIXIA_COOKIE_NAME});
+		}
 	}
 	
 	public static function setServerNotices()
