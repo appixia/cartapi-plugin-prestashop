@@ -109,7 +109,7 @@ class CartAPI_Handlers_Helpers
 		}
 	}
 	
-	public static function preInit($metadata)
+	public static function preInit($metadata = array())
 	{
 		Configuration::set('PS_CANONICAL_REDIRECT', 0);
 		
