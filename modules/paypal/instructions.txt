@@ -1,0 +1,15 @@
+Instructions on how to use this payment module with Appixia apps
+================================================================
+
+1. Required app payment module: 'WebPaymentActivity'
+   For more information see http://kb.appixia.com/frontend:tutorials:checkout4
+   Make sure under your CheckoutPaymentAction module (property 'Modules'), a WebPaymentActivity is defined
+
+2. Showing appropriate order confirmation messages (after checkout is finished)
+   For more information see http://kb.appixia.com/frontend:tutorials:checkout5
+   The Status values this payment method returns are:
+   * 'PayPalSuccess' - returned on success
+       if you want a unique message for this status add a separate HTML in your BasicAfterCheckoutActivity module (property 'StatusContentUrls')
+   * 'PayPalError' - returned on failure
+       if you want a unique message for this status add a separate HTML in your BasicAfterCheckoutActivity module (property 'StatusContentUrls')
+   
