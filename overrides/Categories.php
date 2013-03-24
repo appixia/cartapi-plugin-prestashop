@@ -12,7 +12,7 @@ class CartAPI_Handlers_Override_Categories extends CartAPI_Handlers_Categories
 	// if you want to change the image type for category thumbnails, change it here
 	public function getThumbnailImageType()
 	{
-		return 'large';
+		return 'large'; // change this to 'large_default' if images don't show in Prestashop 1.5
 	}
 }
 

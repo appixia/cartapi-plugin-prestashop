@@ -12,13 +12,13 @@ class CartAPI_Handlers_Override_Items extends CartAPI_Handlers_Items
 	// if you want to change the image type for product thumbnails, change it here
 	public function getThumbnailImageType()
 	{
-		return 'home';
+		return 'home'; // change this to 'home_default' if images don't show in Prestashop 1.5
 	}
 
 	// if you want to change the image type for detailed product images (gallery), change it here
 	public function getImagesImageType()
 	{
-		return 'thickbox';
+		return 'thickbox'; // change this to 'thickbox_default' if images don't show in Prestashop 1.5
 	}
 
 	// this is an example override to add the HTML description of an item to the item resources list
