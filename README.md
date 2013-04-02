@@ -138,6 +138,10 @@ Mobile specific modifications for Prestashop modules are found in this folder. T
 `/modules/appixiacartapi/engine`  
 Core library code used mostly for encoding and decoding the Appixia Cart API web service protocol (XML/JSON over HTTP). This code is not specific to Prestashop and found in Appixia plugins for other carts as well.
 
+`/modules/appixiacartapi/assets`  
+Static files used by HTML templates throughout the module. Mostly mobile-specific versions of JS and CSS files.
+
+
 ### Plugin Overrides Folder Structure
 
 `/modules/appixiacartapi/overrides/`  
@@ -146,8 +150,6 @@ The root of the overrides. All the core classes which you wish to override will 
 `/modules/appixiacartapi/overrides/cms/`  
 Several places in the mobile app display regular HTML content from the Prestashop website. For example, inside the product details additional sections (like product stylist or product look) are plain HTML. The code that renders these HTML files is found in this folder.
 
-`/modules/appixiacartapi/overrides/cms/assets/`  
-Static files required by the templates in the `/cms` folder. Mostly mobile-specific versions of JS and CSS files.
 
 ### Other Important Core Plugin Files
 
