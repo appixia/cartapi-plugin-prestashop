@@ -29,17 +29,24 @@ $url = CartAPI_Handlers_Helpers::getShopDomain() . $_REQUEST['q'];
 ?>
 
 <html>
-<body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body style="font-family: Helvetica,Arial,sans-serif; font-size: 13px;">
 
 <iframe src="bridge://SendMessageToParent/Url?<?php echo urlencode($url); ?>" width="0" height="0" frameborder="0"></iframe>
 
-<p>The Appixia Prestashop module has intercepted the display of this page.</p>
-<p>You are seeing this because you have the "appixia" cookie (did you use the debugger?) or you're using an appixia mobile app.</p>
-<p><a href="pagehookclear.php?url=<?php echo urlencode($url); ?>">Return to original website (clear cookie)</a></p>
-<br>
-<p>If you're trying to show a page from your store website in your mobile app <a href="http://kb.appixia.com/cart:plugin-overrides-prestashop:cms-page">read this</a>.</p>
-<br><br>
-<p>Original requested url:<br><?php echo $url ?></p>
+<p><b>The Appixia Prestashop module has intercepted the display of this page.</b></p>
+<p>You are seeing this message because:</p>
+<ul>
+	<li>
+		You've used the appixia plugin debugger in your browser.<br>- <a href="pagehookclear.php?url=<?php echo urlencode($url); ?>">Clear debugger cookie</a>
+	</il>
+	<li style="margin-top:10px;">
+		or You are using an appixia mobile app to display a page that isn't mobile-optimized (shows your store website header).<br>- <a href="http://kb.appixia.com/cart:plugin-overrides-prestashop:cms-page">Read this if you want to display a CMS page</a>.
+	</li>
+</ul>
+<p style="margin-top:30px;">Original requested url:<br><?php echo $url ?></p>
 
 </body>
 </html>
