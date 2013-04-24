@@ -19,6 +19,9 @@
 *
 */
 
+// this is include and not require because it can fail if no override class is found
+include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'overrides' . DIRECTORY_SEPARATOR . 'Helpers.php');
+
 class CartAPI_Handlers_Helpers
 {
 	protected static $APPIXIA_COOKIE_NAME = 'appixia';
@@ -122,7 +125,7 @@ class CartAPI_Handlers_Helpers
 		}
 	}
 	
-	public static function preInit($metadata = array())
+	public static function preInit(&$metadata = array())
 	{
 		Configuration::set('PS_CANONICAL_REDIRECT', 0);
 		
@@ -140,6 +143,9 @@ class CartAPI_Handlers_Helpers
 		global $smarty;
 		if( function_exists('smartyRegisterFunction') ) smartyRegisterFunction($smarty, 'function', 'l2', 'smartyTranslate2');
 		else $smarty->register_function('l2', 'smartyTranslate2');
+
+		// call the override function if found
+		if (method_exists('CartAPI_Handlers_Override_Helpers', 'preInit')) CartAPI_Handlers_Override_Helpers::preInit($metadata);
 	}
 	
 	public static function getLocale()
