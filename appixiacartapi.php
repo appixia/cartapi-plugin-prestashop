@@ -32,7 +32,7 @@ class AppixiaCartApi extends Module
 		$this->name = 'appixiacartapi';
 		$this->tab = 'mobile';
 		$this->module_key = 'd6b282f5b364787e7b0f9aac1df1b4f7';
-		$this->version = '1.0.4';
+		$this->version = '1.0.5';
 		$this->author = 'Appixia';
 		$this->need_instance = 0;
 
@@ -77,6 +77,10 @@ class AppixiaCartApi extends Module
 	{
 		if (CartAPI_Handlers_Helpers::isAppixiaMobileEngine()) // only hijack appixia engines, not regular users
 		{
+			// allow to disable hijacking by addinging a url parameter (appixiaignore=1&)
+			if (isset($_REQUEST['appixiaignore']) && $_REQUEST['appixiaignore']) return;
+
+			// perform the hijack
 			$url = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
 			$redirectTo = CartAPI_Handlers_Helpers::getShopBaseUrl().'modules/appixiacartapi/pagehook.php?q='.urlencode($url);
 			header('Location: '.$redirectTo);
