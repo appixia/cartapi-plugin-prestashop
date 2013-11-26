@@ -54,6 +54,7 @@ class CartAPI_Handlers_Items
 		$this->addFeaturesFromProduct($encoder, $item, $product, $id_lang);
 		$this->addAvailabilityFromProduct($encoder, $item, $product);
 		$this->addVariationsAndCombinationsFromProduct($encoder, $item, $product, $id_lang);
+		$this->addCustomizationsFromProduct($encoder, $item, $product, $id_lang);
 		$this->addResourcesFromProduct($encoder, $item, $product, $id_lang);
 		$this->addExtraFieldsFromProduct($metadata, $request, $encoder, $item, $product, $id_lang);
 
@@ -86,6 +87,11 @@ class CartAPI_Handlers_Items
 		$this->overrideItemListSqlOrderBy($request, $sql_orderby);
 
 		// complete the sql statement
+		if (class_exists('Shop'))
+		{
+			$id_shop = Shop::getContextShopID(true);
+			if ($id_shop !== null) $sql_filters[] = 'pl.`id_shop` = '.(int)$id_shop;
+		}
 		$sql_filters[] = 'p.`active` = 1';
 		$sql_filters[] = 'pl.`id_lang` = '.(int)$id_lang;
 		$sql_where = CartAPI_Helpers::getSqlWhereFromSqlFilters($sql_filters);
@@ -453,6 +459,27 @@ class CartAPI_Handlers_Items
 			}
 		
 			// add more overrides..
+		}
+	}
+
+	public function addCustomizationsFromProduct($encoder, &$item, $product, $id_lang)
+	{
+		if (!$product->customizable) return;
+
+		// add the variations
+		$_customizations = &$encoder->addArray($item, 'Customization');
+
+		// go over the fields
+		$customizationFields = $product->getCustomizationFields($id_lang);
+		foreach ($customizationFields as $field)
+		{
+			// handle prestashop text fields
+			if ($field['type'] == 1)
+			{
+				$_customization = &$encoder->addContainerToArray($_customizations);
+				$encoder->addString($_customization, 'Id', $field['id_customization_field']);
+				if (!empty($field['name'])) $encoder->addString($_customization, 'Name', $field['name']);
+			}
 		}
 	}
 	
